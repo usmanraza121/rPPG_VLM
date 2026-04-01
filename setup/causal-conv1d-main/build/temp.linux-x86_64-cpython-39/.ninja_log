@@ -1,0 +1,5 @@
+# ninja log v5
+2	6022	1743422731496495849	/raid/muhammadu/SSMamba-main/SSMamba-master2/setup/causal-conv1d-main/build/temp.linux-x86_64-cpython-39/csrc/causal_conv1d_update.o	b0e75cc3e7807f8f
+1	22176	1743422747641033790	/raid/muhammadu/SSMamba-main/SSMamba-master2/setup/causal-conv1d-main/build/temp.linux-x86_64-cpython-39/csrc/causal_conv1d_fwd.o	63b23f239cb3bac3
+0	22777	1743422748249091709	/raid/muhammadu/SSMamba-main/SSMamba-master2/setup/causal-conv1d-main/build/temp.linux-x86_64-cpython-39/csrc/causal_conv1d.o	af5086a66732b4f0
+1	281908	1743423007200732135	/raid/muhammadu/SSMamba-main/SSMamba-master2/setup/causal-conv1d-main/build/temp.linux-x86_64-cpython-39/csrc/causal_conv1d_bwd.o	dba7e43413b5a929

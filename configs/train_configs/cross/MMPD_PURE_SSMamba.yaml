@@ -21,7 +21,7 @@ TRAIN:
     DO_PREPROCESS: False             # if first time, should be true
     DATA_FORMAT: NDCHW
     DATA_PATH: "/storage/datasets_kib/with_special_permission/MMPD"   # Raw dataset path, need to be updated
-    CACHED_PATH: "/raid/muhammadu/pre_proc_datasets/Mamba_cross/MMPD_train" # Processed dataset save path, need to be updated
+    CACHED_PATH: "/storage/muhammadu/pre_proc_datasets/MMPD_PURE_cross/MMPD_train" # Processed dataset save path, need to be updated
     EXP_DATA_NAME: ""
     BEGIN: 0.0
     END: 0.8
@@ -57,7 +57,7 @@ VALID:
     DO_PREPROCESS: False              # if first time, should be true
     DATA_FORMAT: NDCHW
     DATA_PATH: "/storage/datasets_kib/with_special_permission/MMPD"   # Raw dataset path, need to be updated
-    CACHED_PATH: "/raid/muhammadu/pre_proc_datasets/Mamba_cross/MMPD_train" # Processed dataset save path, need to be updated
+    CACHED_PATH: "/storage/muhammadu/pre_proc_datasets/MMPD_PURE_cross/MMPD_train" # Processed dataset save path, need to be updated
     EXP_DATA_NAME: ""
     BEGIN: 0.8
     END: 1.0
@@ -86,7 +86,7 @@ TEST:
     DO_PREPROCESS: False                 # if first time, should be true
     DATA_FORMAT: NDCHW
     DATA_PATH: "/storage/datasets_kib/with_special_permission/PURE"          # Raw dataset path, need to be updated
-    CACHED_PATH: "/raid/muhammadu/pre_proc_datasets/Mamba_cross/PURE_test"     # Processed dataset save path, need to be updated
+    CACHED_PATH: "/storage/muhammadu/pre_proc_datasets/MMPD_PURE_cross/PURE_test"     # Processed dataset save path, need to be updated
     EXP_DATA_NAME: ""
     BEGIN: 0.0
     END: 1.0

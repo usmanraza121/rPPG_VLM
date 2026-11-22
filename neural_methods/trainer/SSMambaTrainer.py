@@ -64,6 +64,8 @@ class SSMambaTrainer(BaseTrainer):
             print('')
             print(f"====Training Epoch: {epoch}====")
             self.model.train()
+            total_train_loss = 0.0
+            total_train_elements = 0
             # import pdb;pdb.set_trace()
             # Model Training
             tbar = tqdm(data_loader["train"], ncols=80)
@@ -83,10 +85,14 @@ class SSMambaTrainer(BaseTrainer):
                 pred_ppg = self.model(data)
                 # print("pred_ppg2:", pred_ppg)
                 # print("Output pred_ppg shape:", pred_ppg.shape)
-                pred_ppg = (pred_ppg-torch.mean(pred_ppg, axis=-1).view(-1, 1))/torch.std(pred_ppg, axis=-1).view(-1, 1)    # normalize
-                # print("Normalized pred_ppg shape:", pred_ppg.shape)
-                # print("pred_ppg2:", pred_ppg)
-                loss = 0.0
+                # pred_ppg = (pred_ppg-torch.mean(pred_ppg, axis=-1).view(-1, 1))/torch.std(pred_ppg, axis=-1).view(-1, 1)    # normalize
+                # # print("Normalized pred_ppg shape:", pred_ppg.shape)
+                # # print("pred_ppg2:", pred_ppg)
+                # loss = 0.0
+                assert pred_ppg.ndim == labels.ndim == 2
+                assert pred_ppg.shape == labels.shape, (
+                    f"Prediction {pred_ppg.shape}, target {labels.shape}"
+                )
 
                 # for ib in range(N):
                 #     loss = loss + self.criterion(pred_ppg[ib], labels[ib], epoch , self.config.TRAIN.DATA.FS , self.diff_flag)
@@ -98,7 +104,15 @@ class SSMambaTrainer(BaseTrainer):
                 loss.backward()
                 self.optimizer.step()
                 self.scheduler.step()
+
+                train_elements = labels.numel()
+                total_train_loss += loss.item() * train_elements
+                total_train_elements += train_elements
                 tbar.set_postfix(loss=loss.item())
+            if total_train_elements == 0:
+                raise ValueError("Training loader produced no samples.")
+            train_epoch_loss = total_train_loss / total_train_elements
+            print("Training epoch loss:", train_epoch_loss)
             if epoch >=5:
                 self.save_model(epoch)
             if not self.config.TEST.USE_LAST_EPOCH: 
@@ -123,7 +137,8 @@ class SSMambaTrainer(BaseTrainer):
             raise ValueError("No data for valid")
         print('')
         print("===Validating===")
-        valid_loss = []
+        total_loss = 0.0
+        total_elements = 0
         self.model.eval()
         valid_step = 0
         with torch.no_grad():
@@ -131,28 +146,42 @@ class SSMambaTrainer(BaseTrainer):
             vbar = tqdm(data_loader["valid"], ncols=80)
             for valid_idx, valid_batch in enumerate(vbar):
                 vbar.set_description("Validation")
-                data_valid, labels_valid = valid_batch[0].to(self.device), valid_batch[1].to(self.device)
+                data_valid = valid_batch[0].float().to(self.device)
+                labels_valid = valid_batch[1].float().to(self.device)
                 N, D, C, H, W = data_valid.shape
                 pred_ppg_valid = self.model(data_valid)
-                pred_ppg_valid = (pred_ppg_valid-torch.mean(pred_ppg_valid, axis=-1).view(-1, 1))/torch.std(pred_ppg_valid, axis=-1).view(-1, 1)    # normalize
+                # pred_ppg_valid = (pred_ppg_valid-torch.mean(pred_ppg_valid, axis=-1).view(-1, 1))/torch.std(pred_ppg_valid, axis=-1).view(-1, 1)    # normalize
+                assert pred_ppg_valid.ndim == labels_valid.ndim == 2
+                assert pred_ppg_valid.shape == labels_valid.shape
+
+                loss = self.criterion(pred_ppg_valid, labels_valid)
 
                 # Model MSE loss computation
-                model_mse = (pred_ppg_valid - labels_valid).square().mean(dim=-1)
-                zero_mse = labels_valid.square().mean()
-                print("Model MSE:", model_mse.mean().item())
-                print("Zero baseline MSE:", zero_mse.item())
-                print("Mean prediction std:", pred_ppg_valid.std(dim=-1, unbiased=False).mean().item())
+                if valid_idx == 0:
+                    print("Model MSE:", loss.item())
+                    print("Zero baseline MSE:", labels_valid.square().mean().item())
+                    print(
+                        "Raw prediction std:",
+                        pred_ppg_valid.std(dim=-1, unbiased=False).mean().item(),
+                    )
+                    print(
+                        "Target std:",
+                        labels_valid.std(dim=-1, unbiased=False).mean().item(),
+                    )
                 # model mse ends here
-                
-                loss = self.criterion(pred_ppg_valid, labels_valid)
 
                 # for ib in range(N):
                 #     loss = self.criterion(pred_ppg_valid[ib], labels_valid[ib], self.config.TRAIN.EPOCHS , self.config.VALID.DATA.FS , self.diff_flag)
 
-                valid_loss.append(loss.item())
+                elements = labels_valid.numel()
+                total_loss += loss.item() * elements
+                total_elements += elements
                 valid_step += 1
                 vbar.set_postfix(loss=loss.item())
-        return np.mean(np.asarray(valid_loss))
+        if total_elements == 0:
+            raise ValueError("Validation loader produced no samples.")
+
+        return total_loss / total_elements
 
 
     def test(self, data_loader):

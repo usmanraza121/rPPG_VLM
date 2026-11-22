@@ -9,4 +9,5 @@ import neural_methods.trainer.BaseTrainer
 # import neural_methods.trainer.RhythmMambaTrainer
 # import neural_methods.trainer.MyRhythmMambaTrainer
 # import neural_methods.trainer.MyRhythmMamba2Trainer
-import neural_methods.trainer.SSMambaTrainer
+# import neural_methods.trainer.SSMambaTrainer
+import neural_methods.trainer.DINOv2TCNTrainer

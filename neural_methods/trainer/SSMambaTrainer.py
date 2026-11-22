@@ -8,14 +8,14 @@ import cv2
 from tqdm import tqdm
 from evaluation.post_process import calculate_hr
 from evaluation.metrics import calculate_metrics
-from neural_methods.model.SSMamba import  SSMamba
+# from neural_methods.model.SSMamba import  SSMamba
 from neural_methods.trainer.BaseTrainer import BaseTrainer
 from neural_methods.loss.TorchLossComputer import Hybrid_Loss
 # from neural_methods.loss.TorchLossComputer import MyHybrid_Loss
 from .gradcam_lca import LCA_GradCAM
 
-from gradcam.utils import visualize_cam
-from gradcam import GradCAM, GradCAMpp
+# from gradcam.utils import visualize_cam
+# from gradcam import GradCAM, GradCAMpp
 from torchvision.utils import make_grid, save_image
 
 class SSMambaTrainer(BaseTrainer):
@@ -87,11 +87,12 @@ class SSMambaTrainer(BaseTrainer):
                 # print("Normalized pred_ppg shape:", pred_ppg.shape)
                 # print("pred_ppg2:", pred_ppg)
                 loss = 0.0
-                for ib in range(N):
-                    loss = loss + self.criterion(pred_ppg[ib], labels[ib], epoch , self.config.TRAIN.DATA.FS , self.diff_flag)
-                loss = loss / N
 
-                # loss = self.criterion(pred_ppg, labels)
+                # for ib in range(N):
+                #     loss = loss + self.criterion(pred_ppg[ib], labels[ib], epoch , self.config.TRAIN.DATA.FS , self.diff_flag)
+                # loss = loss / N
+
+                loss = self.criterion(pred_ppg, labels)
 
 
                 loss.backward()
@@ -134,10 +135,19 @@ class SSMambaTrainer(BaseTrainer):
                 N, D, C, H, W = data_valid.shape
                 pred_ppg_valid = self.model(data_valid)
                 pred_ppg_valid = (pred_ppg_valid-torch.mean(pred_ppg_valid, axis=-1).view(-1, 1))/torch.std(pred_ppg_valid, axis=-1).view(-1, 1)    # normalize
+
+                # Model MSE loss computation
+                model_mse = (pred_ppg_valid - labels_valid).square().mean(dim=-1)
+                zero_mse = labels_valid.square().mean()
+                print("Model MSE:", model_mse.mean().item())
+                print("Zero baseline MSE:", zero_mse.item())
+                print("Mean prediction std:", pred_ppg_valid.std(dim=-1, unbiased=False).mean().item())
+                # model mse ends here
                 
-                # loss = self.criterion(pred_ppg_valid, labels_valid)
-                for ib in range(N):
-                    loss = self.criterion(pred_ppg_valid[ib], labels_valid[ib], self.config.TRAIN.EPOCHS , self.config.VALID.DATA.FS , self.diff_flag)
+                loss = self.criterion(pred_ppg_valid, labels_valid)
+
+                # for ib in range(N):
+                #     loss = self.criterion(pred_ppg_valid[ib], labels_valid[ib], self.config.TRAIN.EPOCHS , self.config.VALID.DATA.FS , self.diff_flag)
 
                 valid_loss.append(loss.item())
                 valid_step += 1

@@ -50,7 +50,7 @@ def seed_worker(worker_id):
 def add_args(parser):
     """Adds arguments for parser."""
     parser.add_argument('--config_file', required=False,
-                        default="configs/train_configs/intra/1PURE_SSMamba.yaml", type=str, help="The name of the model.")
+                        default="configs/train_configs/cross/MMPD_PURE_DINOv2TCN.yaml", type=str, help="The name of the model.")
     return parser
 
 
@@ -70,6 +70,8 @@ def train_and_test(config, data_loader_dict):
         model_trainer = trainer.PhysFormerTrainer.PhysFormerTrainer(config, data_loader_dict)
     elif config.MODEL.NAME == 'SSMamba':
         model_trainer = trainer.SSMambaTrainer.SSMambaTrainer(config, data_loader_dict)
+    elif config.MODEL.NAME == 'DINOv2TCN':
+        model_trainer = trainer.DINOv2TCNTrainer.DINOv2TCNTrainer(config, data_loader_dict)
 
     else:
         raise ValueError('Your Model is Not Supported  Yet!')
@@ -93,6 +95,8 @@ def test(config, data_loader_dict):
         model_trainer = trainer.PhysFormerTrainer.PhysFormerTrainer(config, data_loader_dict)
     elif config.MODEL.NAME == 'SSMamba':
         model_trainer = trainer.SSMambaTrainer.SSMambaTrainer(config, data_loader_dict)
+    elif config.MODEL.NAME == 'DINOv2TCN':
+        model_trainer = trainer.DINOv2TCNTrainer.DINOv2TCNTrainer(config, data_loader_dict)
     else:
         raise ValueError('Your Model is Not Supported  Yet!')
     model_trainer.test(data_loader_dict)
@@ -116,6 +120,7 @@ def unsupervised_method_inference(config, data_loader):
             unsupervised_predict(config, data_loader, "PBV")
         else:
             raise ValueError("Not supported unsupervised method!")
+        
 def setup_run_dir(base_dir, model_name):
         """Create a unique run directory for this training session."""
         current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")

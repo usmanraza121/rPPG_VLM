@@ -9,8 +9,9 @@ class LCA_GradCAM:
         # Handle DataParallel
         self.target_model = model.module if isinstance(model, torch.nn.DataParallel) else model
 
-        self.target_model.SA_lca.register_forward_hook(self._forward_hook)
-        self.target_model.SA_lca.register_backward_hook(self._backward_hook)
+        if hasattr(self.target_model, "SA_lca"):
+            self.target_model.SA_lca.register_forward_hook(self._forward_hook)
+            self.target_model.SA_lca.register_backward_hook(self._backward_hook)
 
     def _forward_hook(self, module, input, output):
         self.activations["lca"] = output

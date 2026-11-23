@@ -72,6 +72,8 @@ def train_and_test(config, data_loader_dict):
         model_trainer = trainer.SSMambaTrainer.SSMambaTrainer(config, data_loader_dict)
     elif config.MODEL.NAME == 'DINOv2TCN':
         model_trainer = trainer.DINOv2TCNTrainer.DINOv2TCNTrainer(config, data_loader_dict)
+    elif config.MODEL.NAME == 'RegionalDINO':
+        model_trainer = trainer.RegionalDINOTrainer.RegionalDINOTrainer(config, data_loader_dict)
 
     else:
         raise ValueError('Your Model is Not Supported  Yet!')
@@ -97,6 +99,8 @@ def test(config, data_loader_dict):
         model_trainer = trainer.SSMambaTrainer.SSMambaTrainer(config, data_loader_dict)
     elif config.MODEL.NAME == 'DINOv2TCN':
         model_trainer = trainer.DINOv2TCNTrainer.DINOv2TCNTrainer(config, data_loader_dict)
+    elif config.MODEL.NAME == 'RegionalDINO':
+        model_trainer = trainer.RegionalDINOTrainer.RegionalDINOTrainer(config, data_loader_dict)
     else:
         raise ValueError('Your Model is Not Supported  Yet!')
     model_trainer.test(data_loader_dict)
@@ -152,7 +156,7 @@ class Tee(object):
 
 if __name__ == "__main__":
     #os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3,4,5,6,7"
-    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+    os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1')
     # parse arguments.
     global logger
     parser = argparse.ArgumentParser()

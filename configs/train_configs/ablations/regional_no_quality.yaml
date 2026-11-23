@@ -1,0 +1,5 @@
+BASE: ['../cross/MMPD_PURE_RegionalDINO.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_RegionalDINONoQualityTeacher
+  REGIONAL_DINO:
+    QUALITY_WEIGHT: 0.0

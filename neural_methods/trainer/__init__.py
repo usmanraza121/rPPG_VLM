@@ -1,13 +1,14 @@
-import neural_methods.trainer.BaseTrainer
-# import neural_methods.trainer.PhysnetTrainer
-# import neural_methods.trainer.TscanTrainer
-# import neural_methods.trainer.DeepPhysTrainer
-# import neural_methods.trainer.EfficientPhysTrainer
-# import neural_methods.trainer.BigSmallTrainer
-# import neural_methods.trainer.PhysFormerTrainer
-# import neural_methods.trainer.RhythmFormerTrainer
-# import neural_methods.trainer.RhythmMambaTrainer
-# import neural_methods.trainer.MyRhythmMambaTrainer
-# import neural_methods.trainer.MyRhythmMamba2Trainer
-# import neural_methods.trainer.SSMambaTrainer
-import neural_methods.trainer.DINOv2TCNTrainer
+"""Load the selected trainer without importing unrelated backbone code."""
+
+from importlib import import_module
+
+
+def __getattr__(name):
+    if name in {'BaseTrainer', 'DINOv2TCNTrainer', 'RegionalDINOTrainer',
+                'SSMambaTrainer', 'PhysnetTrainer', 'TscanTrainer',
+                'EfficientPhysTrainer', 'DeepPhysTrainer', 'BigSmallTrainer',
+                'PhysFormerTrainer'}:
+        module = import_module(f'{__name__}.{name}')
+        globals()[name] = module
+        return module
+    raise AttributeError(f'module {__name__!r} has no attribute {name!r}')

@@ -2,6 +2,12 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0-red)
 # SS-Mamba
 
+An experimental **RegionalDINO** model is available alongside the original
+models: a shallow regional RGB/difference pulse path with optional DINOv2
+context for explicit waveform fusion. See [the research and run guide](docs/regional_dino.md)
+for the hypothesis, fixed-clip preflight, training configuration and ablations.
+This is an unvalidated research prototype; no accuracy or novelty claim is made.
+
 Implementation of paper **SS-Mamba: Spatio-Spectral Cross-Attention Temporal Encoding for Accurate Remote Photoplethysmography**. This repository contains the model, training and evaluation pipeline, dataset loaders, and configuration files for intra-dataset and cross-dataset experiments.
 
 ## Overview

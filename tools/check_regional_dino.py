@@ -147,7 +147,10 @@ def main():
         static = video[:, :1].expand_as(video)
         static_pred = model(static)
         print('Static-input output max abs:', float(static_pred.abs().max()))
-    print('No checkpoint saved. Synthetic improvement does not establish physiological accuracy.')
+    if args.synthetic:
+        print('No checkpoint saved. Synthetic improvement does not establish physiological accuracy.')
+    else:
+        print('No checkpoint saved. Fitting these training clips does not establish held-out accuracy.')
 
 
 if __name__ == '__main__':

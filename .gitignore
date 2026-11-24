@@ -5,4 +5,5 @@ __pycache__/
 *.pickle
 *.log
 runs/
+diagnostics/
 

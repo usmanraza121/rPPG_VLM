@@ -1,0 +1,45 @@
+# Exploratory PURE subject-disjoint 6/2/2 experiment (all 10 subjects required).
+# Inherit the unchanged no-DINO pulse path, learned fusion, loss and schedule.
+BASE: ['../ablations/regional_shallow_learned.yaml']
+TOOLBOX_MODE: train_and_test
+TRAIN:
+  MODEL_FILE_NAME: PURE_PURE_RegionalShallowLearned_6_2_2
+  DATA:
+    DATASET: PURE
+    DATA_PATH: /storage/datasets_kib/with_special_permission/PURE
+    # Reuse the verified Raw RGB / Standardized PPG cache from the cross run.
+    # get_config appends EXP_DATA_NAME to this cache root.
+    CACHED_PATH: /raid/muhammadu/pre_proc_datasets/MMPD_PURE_cross_VLM/PURE_test
+    EXP_DATA_NAME: Data_cross_MMPD_PURE
+    DO_PREPROCESS: False
+    # New split lists; never reuse the original full-PURE test CSV for training.
+    FILE_LIST_PATH: data/file_lists/PURE_RegionalShallowLearned_6_2_2
+    BEGIN: 0.0
+    END: 0.6
+VALID:
+  DATA:
+    DATASET: PURE
+    DATA_PATH: /storage/datasets_kib/with_special_permission/PURE
+    CACHED_PATH: /raid/muhammadu/pre_proc_datasets/MMPD_PURE_cross_VLM/PURE_test
+    EXP_DATA_NAME: Data_cross_MMPD_PURE
+    DO_PREPROCESS: False
+    FILE_LIST_PATH: data/file_lists/PURE_RegionalShallowLearned_6_2_2
+    BEGIN: 0.6
+    END: 0.8
+TEST:
+  USE_LAST_EPOCH: False
+  DATA:
+    DATASET: PURE
+    DATA_PATH: /storage/datasets_kib/with_special_permission/PURE
+    CACHED_PATH: /raid/muhammadu/pre_proc_datasets/MMPD_PURE_cross_VLM/PURE_test
+    EXP_DATA_NAME: Data_cross_MMPD_PURE
+    DO_PREPROCESS: False
+    FILE_LIST_PATH: data/file_lists/PURE_RegionalShallowLearned_6_2_2
+    BEGIN: 0.8
+    END: 1.0
+MODEL:
+  MODEL_DIR: output/PURE_PURE_RegionalShallowLearned_6_2_2
+LOG:
+  PATH: runs/PURE_PURE_RegionalShallowLearned_6_2_2
+INFERENCE:
+  MODEL_PATH: ''

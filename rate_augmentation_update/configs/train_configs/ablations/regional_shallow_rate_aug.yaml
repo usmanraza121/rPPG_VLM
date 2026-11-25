@@ -1,0 +1,13 @@
+# First single-factor rate experiment: slowing only; no new loss/backbone/gate.
+BASE: ['regional_shallow_learned.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_RegionalShallowRateAug
+  REGIONAL_DINO:
+    RATE_AUG:
+      ENABLED: True
+      PROBABILITY: 0.5
+      MIN_SPEED: 0.6
+      MAX_SPEED: 1.0
+      MIN_OUTPUT_BPM: 50.0
+      MAX_OUTPUT_BPM: 140.0
+      SEED: 1701

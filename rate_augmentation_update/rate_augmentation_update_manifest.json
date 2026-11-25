@@ -1,0 +1,11 @@
+{
+  "config.py": "0a5c43c35ddef8913eb9341d76031911c3d12d0d9bdda9453111049dee7c9ba1",
+  "neural_methods/trainer/RegionalDINOTrainer.py": "c91cd29ca99db2e22511670817dece6fcbca44c2d0c29789fca8e3fff337d055",
+  "neural_methods/augmentation/__init__.py": "03485d8478357dc2e9a5f15a3bcc80ee078fa679b40b23a2ddb142166cb7e2b6",
+  "neural_methods/augmentation/paired_rate.py": "0656e09c756efdc0c1651c813c0b5ec6c2c1f5f0bc6001fb77bc2f9a6b8facfb",
+  "configs/train_configs/ablations/regional_shallow_rate_aug.yaml": "e64299f2d494650fac60f907757f66216da3d91e9b21a44f894d2e1595c4f6d9",
+  "tools/check_rate_augmentation.py": "4d873cd86f11a7216e64e23ea133c99281f2b8051d387956a393c73d1e55ddd7",
+  "tools/audit_pure_timing.py": "4cd3a94d30c0fa0a0fc07d992f2ce90cec15da11d08a3ef757c4ca5a75dfa33d",
+  "tests/test_paired_rate.py": "e1ced7b691eb3a379a109bcca669f137004402757e2b0cff19fd052b51e9fea7",
+  "docs/experiments/2026-11-25_rate_augmentation_run.md": "c30df78c817567e5e00d40f5f8d28d1953b33a4d12ccb08b24bd6a6ef870c754"
+}

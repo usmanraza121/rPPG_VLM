@@ -344,6 +344,16 @@ _C.TRAIN.REGIONAL_DINO.QUALITY_TEMPERATURE = 0.25
 _C.TRAIN.REGIONAL_DINO.MIN_HZ = 0.75
 _C.TRAIN.REGIONAL_DINO.MAX_HZ = 2.5
 
+# Disabled by default: the existing regional runs retain their original path.
+_C.TRAIN.REGIONAL_DINO.RATE_AUG = CN()
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.ENABLED = False
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.PROBABILITY = 0.5
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.MIN_SPEED = 0.6
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.MAX_SPEED = 1.0
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.MIN_OUTPUT_BPM = 50.0
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.MAX_OUTPUT_BPM = 140.0
+_C.TRAIN.REGIONAL_DINO.RATE_AUG.SEED = 1701
+
 # -----------------------------------------------------------------------------
 # Inference settings
 # -----------------------------------------------------------------------------

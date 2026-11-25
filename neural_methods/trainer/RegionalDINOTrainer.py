@@ -11,6 +11,7 @@ from neural_methods.loss.RegionalPulseLoss import (
     RegionalPulseLoss, estimate_hr, waveform_correlation,
 )
 from neural_methods.model.regional_dino import RegionalDINO
+from neural_methods.augmentation.paired_rate import PairedRateAugment
 
 
 def model_arguments(config):
@@ -54,7 +55,7 @@ def audit_batch(video, labels):
 class RegionalDINOTrainer:
     """Pulse-oriented objective, full-set diagnostics, and two rotating checkpoints.
 
-    Selection uses MMPD validation only. Diagnostic clip HR is distinct from
+    Selection uses source validation only. Diagnostic clip HR is distinct from
     the established full-recording evaluator used for the final test report.
     Checkpoints before CHECKPOINT_START_EPOCH are deliberately ineligible.
     """
@@ -79,6 +80,11 @@ class RegionalDINOTrainer:
         self.criterion = build_loss(config).to(self.device)
         self.fs = float(config.TRAIN.DATA.FS)
         self.min_hz, self.max_hz = self.settings.MIN_HZ, self.settings.MAX_HZ
+        self.rate_augment = None
+        if self.settings.RATE_AUG.ENABLED and config.TOOLBOX_MODE == 'train_and_test':
+            settings = {k.lower(): v for k, v in self.settings.RATE_AUG.items() if k != 'ENABLED'}
+            self.rate_augment = PairedRateAugment(fs=self.fs, **settings)
+            print('Training-only paired slowing:', json.dumps(settings))
         if config.TOOLBOX_MODE == 'train_and_test':
             train_loader = data_loader.get('train')
             if train_loader is None or len(train_loader) == 0:
@@ -139,13 +145,23 @@ class RegionalDINOTrainer:
         self.model.train(training)
         sums, count, elements = {}, 0, 0
         squared_error, zero_error = 0.0, 0.0
-        bar = tqdm(loader, desc='Train' if training else 'MMPD validation', ncols=95)
+        augmentation_counts, speeds, augmentation_records = {}, [], []
+        bar = tqdm(loader, desc='Train' if training else 'Source validation', ncols=95)
         with torch.set_grad_enabled(training):
             for step, batch in enumerate(bar):
                 video, target = batch[0].float(), batch[1].float()
                 if step == 0:
                     print('Input audit:', json.dumps(audit_batch(video, target)))
                 video, target = video.to(self.device), target.to(self.device)
+                if training and self.rate_augment is not None:
+                    video, target, plans = self.rate_augment(video, target)
+                    for item, plan in enumerate(plans):
+                        reason = plan['reason']
+                        augmentation_counts[reason] = augmentation_counts.get(reason, 0) + 1
+                        if plan['applied']:
+                            speeds.append(plan['speed'])
+                        augmentation_records.append({
+                            'recording': str(batch[2][item]), 'clip': int(batch[3][item]), **plan})
                 if training:
                     self.optimizer.zero_grad(set_to_none=True)
                 output = self.model(video, return_aux=True)
@@ -195,6 +211,14 @@ class RegionalDINOTrainer:
         result['raw_mse'] = squared_error / elements
         result['zero_baseline_mse'] = zero_error / elements
         result['samples'] = count
+        if training and self.rate_augment is not None:
+            result['rate_augmentation'] = {
+                'counts': augmentation_counts, 'applied_fraction': len(speeds) / count,
+                'mean_speed': sum(speeds) / len(speeds) if speeds else None,
+                'min_speed': min(speeds) if speeds else None,
+                'max_speed': max(speeds) if speeds else None,
+            }
+            self._rate_augmentation_records = augmentation_records
         return result
 
     def valid(self, data_loader):
@@ -205,6 +229,10 @@ class RegionalDINOTrainer:
         for epoch in range(self.config.TRAIN.EPOCHS):
             print(f'\n====RegionalDINO epoch {epoch}====')
             train_stats = self._run_epoch(data_loader['train'], training=True)
+            if self.rate_augment is not None:
+                with (self.run_dir / 'rate_augmentation.jsonl').open('a', encoding='utf-8') as stream:
+                    for row in self._rate_augmentation_records:
+                        stream.write(json.dumps({'epoch': epoch, **row}, allow_nan=False) + '\n')
             valid_stats = self.valid(data_loader)
             key = 'total' if self.settings.SELECTION_METRIC == 'loss' else 'clip_hr_mae'
             score = valid_stats[key]
@@ -237,6 +265,9 @@ class RegionalDINOTrainer:
                    'optimizer_state': self.optimizer.state_dict(),
                    'scheduler_state': self.scheduler.state_dict(),
                    'metrics': metrics}
+        if self.rate_augment is not None:
+            payload['rate_augmentation_settings'] = dict(self.settings.RATE_AUG)
+            payload['rate_augmentation_state'] = self.rate_augment.state_dict()
         temporary = path.with_suffix('.tmp')
         torch.save(payload, temporary)
         temporary.replace(path)

@@ -2,6 +2,8 @@
 
 This run supports the existing pulse path learning substantially better within PURE. Eleven of12reported test recordings have HR errors no larger than.5401bpm. Overall MAE4.0504/RMSE12.9463 remain the headline results: one45.3645→90.1890near-doubling failure accounts for92.22%of total absolute error. Do not remove that failure or present the remaining11MAE.3437 as the main result.
 
+> Update after the matched audits: [recording901 spectral checks](2026-11-25_pure_matched_audits.md) show the PURE-trained raw waveform has the correct fundamental. The shared evaluation filter promotes its second harmonic near the lower band edge. The original log metrics below are preserved; the audits recommended here are now complete.
+
 ## Verified from the supplied log
 
 Source: workspace `training_PURE_PURE`, SHA256 `20996a7db9d9aa1cbbd6856ad77ed7b55f779298974a2fcfebde3057849f453a`.

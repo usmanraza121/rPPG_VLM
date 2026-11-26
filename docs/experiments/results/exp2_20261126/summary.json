@@ -1,0 +1,387 @@
+{
+  "review_date": "2026-11-26",
+  "source_hashes": {
+    "regional_history.jsonl": "b7428d46ccd65ccf202e89e116ff13a1cc68148134dc506650ad9cc0365e8400",
+    "regional_waveforms.pt": "ca094d72c6329fd19bf1327c35dec71969a1b634b3bd425a658b680f62f5c0c5",
+    "training.log": "8556f7d431c4e3f615b6d81dc49b99cb8ab8571f8ea6523e84d47af1c946946a"
+  },
+  "run_directory": "runs/RegionalSTAttention_20261126_093244",
+  "loaded_checkpoint": "runs/RegionalSTAttention_20261126_093244/checkpoints/MMPD_PURE_RegionalSTAttention_best.pth",
+  "selected_epoch_zero_based": 39,
+  "model_metadata": {
+    "model_name": "RegionalSTAttention",
+    "model_arguments": {
+      "temporal_backend": "attention",
+      "spatial_size": 12,
+      "hidden_dim": 48,
+      "grid_size": 3,
+      "context_dim": 32,
+      "dropout": 0.1,
+      "fusion": "learned"
+    },
+    "fs": 30.0,
+    "grid_size": 3,
+    "normalization": "raw",
+    "label_type": "Standardized"
+  },
+  "epochs": 40,
+  "recordings": 59,
+  "clips": 750,
+  "frames": 120000,
+  "all_exp1_exp2_reference_clips_exactly_equal": true,
+  "exact_baseline_reference_recordings": 12,
+  "reference_log_vectors_equal": true,
+  "resolved_config_differences": [
+    {
+      "key": "BASE",
+      "baseline": [
+        "../cross/MMPD_PURE_RegionalDINO.yaml"
+      ],
+      "exp2": [
+        "regional_shallow_learned.yaml"
+      ]
+    },
+    {
+      "key": "LOG.PATH",
+      "baseline": "runs/RegionalDINO_20261124_121357",
+      "exp2": "runs/RegionalSTAttention_20261126_093244"
+    },
+    {
+      "key": "MODEL.MODEL_DIR",
+      "baseline": "runs/RegionalDINO_20261124_121357/checkpoints",
+      "exp2": "runs/RegionalSTAttention_20261126_093244/checkpoints"
+    },
+    {
+      "key": "MODEL.NAME",
+      "baseline": "RegionalDINO",
+      "exp2": "RegionalSTAttention"
+    },
+    {
+      "key": "MODEL.REGIONAL_ST",
+      "baseline": "<absent>",
+      "exp2": {
+        "CONTEXT_DIM": 32,
+        "DROPOUT": 0.1,
+        "FUSION": "learned",
+        "GRID_SIZE": 3,
+        "HIDDEN_DIM": 48,
+        "SPATIAL_SIZE": 12,
+        "TEMPORAL_BACKEND": "attention"
+      }
+    },
+    {
+      "key": "TRAIN.MODEL_FILE_NAME",
+      "baseline": "MMPD_PURE_RegionalShallowLearned",
+      "exp2": "MMPD_PURE_RegionalSTAttention"
+    },
+    {
+      "key": "TRAIN.REGIONAL_DINO.RATE_AUG",
+      "baseline": "<absent>",
+      "exp2": {
+        "ENABLED": false,
+        "MAX_OUTPUT_BPM": 140.0,
+        "MAX_SPEED": 1.0,
+        "MIN_OUTPUT_BPM": 50.0,
+        "MIN_SPEED": 0.6,
+        "PROBABILITY": 0.5,
+        "SEED": 1701
+      }
+    }
+  ],
+  "metrics": {
+    "baseline": {
+      "MAE": 18.26114814871318,
+      "RMSE": 26.105114190282574,
+      "MAPE": 30.607357710496245,
+      "Pearson": 0.08426364997875146,
+      "SNR": -3.367713099909702,
+      "within5": 27,
+      "over10": 31,
+      "over20": 25,
+      "bias_bpm": 9.492135654237288
+    },
+    "exp1": {
+      "MAE": 13.583731254481382,
+      "RMSE": 22.869360444638822,
+      "MAPE": 20.94271861221804,
+      "Pearson": 0.26793010006799783,
+      "SNR": -1.9646188382283631,
+      "within5": 35,
+      "over10": 22,
+      "over20": 18,
+      "bias_bpm": 3.075561793728813
+    },
+    "exp2": {
+      "MAE": 9.446368365650121,
+      "RMSE": 18.509581637943374,
+      "MAPE": 18.754950153361552,
+      "Pearson": 0.7227048485269987,
+      "SNR": 0.7830637802879565,
+      "within5": 43,
+      "over10": 14,
+      "over20": 12,
+      "bias_bpm": 8.476101846949152
+    }
+  },
+  "hr_bins": [
+    {
+      "hr_bin": "<60",
+      "n": 25,
+      "baseline_mae": 31.1071107108,
+      "exp1_mae": 19.161116111200002,
+      "exp2_mae": 20.608460846084608,
+      "exp2_candidate_correct": 15
+    },
+    {
+      "hr_bin": "60-80",
+      "n": 26,
+      "baseline_mae": 1.7032472480769216,
+      "exp1_mae": 1.1008793196153834,
+      "exp2_mae": 1.3293637056013274,
+      "exp2_candidate_correct": 26
+    },
+    {
+      "hr_bin": "80-100",
+      "n": 1,
+      "baseline_mae": 0.5400540099999915,
+      "exp1_mae": 0.0,
+      "exp2_mae": 0.0,
+      "exp2_candidate_correct": 1
+    },
+    {
+      "hr_bin": ">=100",
+      "n": 7,
+      "baseline_mae": 36.4150700757143,
+      "exp1_mae": 41.96991127428572,
+      "exp2_mae": 1.0801080108010734,
+      "exp2_candidate_correct": 7
+    }
+  ],
+  "subject_metrics": [
+    {
+      "subject": "subject01",
+      "n": 6,
+      "mae_bpm": 0.9900990099009851,
+      "waveform_corr": -0.07292616246745114,
+      "candidate_correct": 6
+    },
+    {
+      "subject": "subject02",
+      "n": 6,
+      "mae_bpm": 0.7200720072007177,
+      "waveform_corr": -0.0011238399378257213,
+      "candidate_correct": 6
+    },
+    {
+      "subject": "subject03",
+      "n": 6,
+      "mae_bpm": 3.3303330333033307,
+      "waveform_corr": -0.008738520480079393,
+      "candidate_correct": 5
+    },
+    {
+      "subject": "subject04",
+      "n": 6,
+      "mae_bpm": 2.160216021602159,
+      "waveform_corr": 0.19797022428852576,
+      "candidate_correct": 6
+    },
+    {
+      "subject": "subject05",
+      "n": 6,
+      "mae_bpm": 29.432943294329434,
+      "waveform_corr": -0.10621466253483318,
+      "candidate_correct": 2
+    },
+    {
+      "subject": "subject06",
+      "n": 5,
+      "mae_bpm": 1.5121512151215115,
+      "waveform_corr": 0.14863363681491562,
+      "candidate_correct": 5
+    },
+    {
+      "subject": "subject07",
+      "n": 6,
+      "mae_bpm": 1.2601260126012523,
+      "waveform_corr": -0.05751716285190725,
+      "candidate_correct": 6
+    },
+    {
+      "subject": "subject08",
+      "n": 6,
+      "mae_bpm": 8.550855085508553,
+      "waveform_corr": -0.08997952223198431,
+      "candidate_correct": 4
+    },
+    {
+      "subject": "subject09",
+      "n": 6,
+      "mae_bpm": 44.554455445544555,
+      "waveform_corr": -0.06740866115400702,
+      "candidate_correct": 3
+    },
+    {
+      "subject": "subject10",
+      "n": 6,
+      "mae_bpm": 0.630063006300631,
+      "waveform_corr": 0.11703191681445775,
+      "candidate_correct": 6
+    }
+  ],
+  "selected_source_validation_clip": {
+    "baseline": {
+      "total": 1.3191900304713309,
+      "mse": 0.9868013323658574,
+      "correlation": 0.7112806147111514,
+      "spectral": 0.19339595907123658,
+      "regional": 1.1093478145074116,
+      "quality": 0.3849636924606961,
+      "waveform_corr": 0.28849786140800865,
+      "prediction_std": 0.07016411601666511,
+      "target_std": 0.9291322725690906,
+      "undefined_hr_fraction": 0.0,
+      "weight_entropy": 2.1457148810135425,
+      "clip_hr_mae": 12.47298869680851,
+      "raw_mse": 0.9868013142748392,
+      "zero_baseline_mse": 1.0020001963898293,
+      "samples": 1507
+    },
+    "exp1": {
+      "total": 1.3730976478738663,
+      "mse": 0.991074025354088,
+      "correlation": 0.7287842003652095,
+      "spectral": 0.22134708765431912,
+      "regional": 1.1481595128754867,
+      "quality": 0.36819077058192823,
+      "waveform_corr": 0.2710286681135522,
+      "prediction_std": 0.0647823477946296,
+      "target_std": 0.9291322725690906,
+      "undefined_hr_fraction": 0.0,
+      "weight_entropy": 2.1485544785649555,
+      "clip_hr_mae": 15.567860704787234,
+      "raw_mse": 0.991074007334263,
+      "zero_baseline_mse": 1.0020001963898293,
+      "samples": 1507
+    },
+    "exp2": {
+      "total": 1.3685692604915465,
+      "mse": 0.9369572130512068,
+      "correlation": 0.72396644576148,
+      "spectral": 0.22363576157526535,
+      "regional": 1.1786947855509584,
+      "quality": 0.3259763363860028,
+      "waveform_corr": 0.2756376466809635,
+      "prediction_std": 0.2637378945007337,
+      "target_std": 0.9291322725690906,
+      "undefined_hr_fraction": 0.0,
+      "weight_entropy": 2.154990667211511,
+      "clip_hr_mae": 16.85349484707447,
+      "raw_mse": 0.936957202498772,
+      "zero_baseline_mse": 1.0020001963898293,
+      "samples": 1507
+    }
+  },
+  "saved_waveform_analysis": {
+    "uniform_mae_bpm": 10.087110405955848,
+    "processed_signed_waveform_corr": 0.003554743063456793,
+    "oracle_region_mae_bpm_diagnostic": 2.5812750766602073,
+    "correct_processed_regional_candidate": 49,
+    "large_fused_error_over10": 14,
+    "correct_candidate_large_fused_error": 5,
+    "no_candidate_large_fused_error": 9,
+    "missing_candidate_with_reference_near_top3": 8,
+    "near_double_fused": 7,
+    "near_half_fused": 0,
+    "regional_second_to_fundamental_power_gt1": 69
+  },
+  "processing_stage_diagnostics": {
+    "detrended": {
+      "mae_bpm": 4.659109978794489,
+      "candidate_correct": 56,
+      "within5": 51
+    },
+    "filtered": {
+      "mae_bpm": 9.446368365650121,
+      "candidate_correct": 49
+    },
+    "raw": {
+      "mae_bpm": 4.476040824421424,
+      "candidate_correct": 57,
+      "within5": 51
+    }
+  },
+  "matched12": {
+    "baseline_mae": 20.702070207020704,
+    "exp1_mae": 17.101710171017103,
+    "exp2_mae": 22.59225922592259,
+    "baseline_waveform_corr": 0.049253370836924805,
+    "exp2_waveform_corr": 0.024811627830225363
+  },
+  "limits": [
+    "Single exploratory run; architecture and capacity changed, attention effect not isolated.",
+    "No full-record Exp2 MMPD source-validation audit supplied.",
+    "Full59 baseline comparisons use consistent log order/reference vectors; baseline arrays independently verified only for12recordings.",
+    "No trained checkpoint or server cache hashes supplied; resolved settings and saved references support comparison.",
+    "Processed dominant or secondary spectral match does not establish physiology; oracle is diagnostic only.",
+    "PURE test already informed development; fresh data required for confirmatory claims."
+  ],
+  "detrended_correct_filtered_error_over10_recordings": [
+    "903",
+    "906",
+    "905",
+    "901",
+    "801",
+    "501",
+    "904",
+    "506"
+  ],
+  "candidate_no_correct_any_stage": 0,
+  "detrended_candidate_lost_after_filter": 9,
+  "detrended_missing_candidate_gained_after_filter": 2,
+  "subject05_09_absolute_error_fraction": 0.796511627906977,
+  "waveform_diagnostics": {
+    "mean_absolute_unshifted_r": 0.14156824552463732,
+    "mean_bounded_lagged_absolute_r_diagnostic": 0.552250040683015,
+    "negative_signed_correlation_recordings": 32,
+    "lag_search_bound_recordings": 1
+  },
+  "processing_sensitivity_both_runs": [
+    {
+      "run": "exp1",
+      "stage": "detrended",
+      "mae_bpm": 10.032189659643931,
+      "candidate_correct": 44
+    },
+    {
+      "run": "exp1",
+      "stage": "filtered",
+      "mae_bpm": 13.583731254481382,
+      "candidate_correct": 37
+    },
+    {
+      "run": "exp1",
+      "stage": "raw",
+      "mae_bpm": 10.169491525423727,
+      "candidate_correct": 48
+    },
+    {
+      "run": "exp2",
+      "stage": "detrended",
+      "mae_bpm": 4.659109978794489,
+      "candidate_correct": 56
+    },
+    {
+      "run": "exp2",
+      "stage": "filtered",
+      "mae_bpm": 9.446368365650121,
+      "candidate_correct": 49
+    },
+    {
+      "run": "exp2",
+      "stage": "raw",
+      "mae_bpm": 4.476040824421424,
+      "candidate_correct": 57
+    }
+  ]
+}

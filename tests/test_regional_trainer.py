@@ -15,7 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 from config import get_config
 from neural_methods.model.regional_dino import RegionalDINO
 from neural_methods.trainer.RegionalDINOTrainer import (
-    RegionalDINOTrainer, audit_batch, model_arguments,
+    RegionalDINOTrainer, audit_batch, build_model, model_arguments,
 )
 from tools.check_regional_dino import load_cached_subset
 
@@ -175,11 +175,13 @@ class RegionalTrainerTests(unittest.TestCase):
         for path in paths:
             with self.subTest(path=path.name), contextlib.redirect_stdout(io.StringIO()):
                 config = get_config(argparse.Namespace(config_file=str(path)))
-                arguments = model_arguments(config)
-                arguments.update(use_dino=False, finetune_blocks=0)
-                model = RegionalDINO(**arguments)
+                config.defrost()
+                config.MODEL.REGIONAL_DINO.USE_DINO = False
+                config.MODEL.REGIONAL_DINO.FINETUNE_BLOCKS = 0
+                config.freeze()
+                model = build_model(config)
                 self.assertEqual(model.num_regions, 9)
-                self.assertEqual(config.MODEL.NAME, 'RegionalDINO')
+                self.assertIn(config.MODEL.NAME, ('RegionalDINO', 'RegionalSTAttention'))
 
 
 if __name__ == '__main__':

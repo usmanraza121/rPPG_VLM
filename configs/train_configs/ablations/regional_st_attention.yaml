@@ -1,0 +1,19 @@
+# Architecture experiment: local 3D features + full-clip temporal attention.
+# Same cache, split, loss, optimizer and evaluation as no-DINO baseline.
+BASE: ['regional_shallow_learned.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_RegionalSTAttention
+  REGIONAL_DINO:
+    RATE_AUG:
+      ENABLED: False
+MODEL:
+  NAME: RegionalSTAttention
+  MODEL_DIR: output/MMPD_PURE_RegionalSTAttention
+  REGIONAL_ST:
+    TEMPORAL_BACKEND: attention
+    SPATIAL_SIZE: 12
+    HIDDEN_DIM: 48
+    GRID_SIZE: 3
+    CONTEXT_DIM: 32
+    DROPOUT: 0.1
+    FUSION: learned

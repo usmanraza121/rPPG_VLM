@@ -1,0 +1,12 @@
+{
+  "tests_run": 19,
+  "failures": 0,
+  "errors": 0,
+  "successful": true,
+  "suites": [
+    "regional_st_integration",
+    "regional_audit",
+    "regional_protocol",
+    "paired_rate"
+  ]
+}

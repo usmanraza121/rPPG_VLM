@@ -1,0 +1,8 @@
+# Matched 3D extractor with six dilated TCN blocks instead of attention.
+BASE: ['regional_st_attention.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_RegionalSTTCN
+MODEL:
+  MODEL_DIR: output/MMPD_PURE_RegionalSTTCN
+  REGIONAL_ST:
+    TEMPORAL_BACKEND: tcn

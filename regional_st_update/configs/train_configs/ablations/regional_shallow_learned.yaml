@@ -1,0 +1,6 @@
+BASE: ['../cross/MMPD_PURE_RegionalDINO.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_RegionalShallowLearned
+MODEL:
+  REGIONAL_DINO:
+    USE_DINO: False

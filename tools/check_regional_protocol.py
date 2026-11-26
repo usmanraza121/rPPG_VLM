@@ -26,7 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from config import get_config
-from neural_methods.trainer.RegionalDINOTrainer import build_model, model_arguments
+from neural_methods.trainer.RegionalDINOTrainer import (
+    build_model, model_arguments, validate_model_checkpoint,
+)
 from tools.audit_regional_dino import infer_segment
 from tools.regional_audit_data import contiguous_segments, read_cache_records
 from tools.regional_signal_diagnostics import classical_signals, detrend_signal
@@ -221,8 +223,7 @@ def main(argv=None):
                 or d.DATA_FORMAT != 'NDCHW' or float(d.FS) != fs):
             raise ValueError('Require matching Raw RGB / Standardized PPG / NDCHW source caches.')
     payload = torch.load(args.checkpoint, map_location='cpu', weights_only=True)
-    if payload.get('model_arguments') != model_arguments(config):
-        raise ValueError('Checkpoint architecture differs from config.')
+    validate_model_checkpoint(payload, config)
     model = build_model(config)
     model.load_state_dict(payload['model_state'], strict=True)
     model.to(args.device).eval()
@@ -231,6 +232,7 @@ def main(argv=None):
     manifest = {'command_arguments': vars(args), 'checkpoint_epoch': payload['epoch'],
                 'checkpoint_sha256': file_hash(args.checkpoint), 'subjects': subjects,
                 'file_list_sha256': {n: file_hash(config[n.upper()].DATA.FILE_LIST_PATH) for n in groups},
+                'model_name': config.MODEL.NAME,
                 'model_arguments': model_arguments(config), 'resolved_config': config.dump(),
                 'reference_policy': 'Fixed current-protocol contact-PPG HR for all primary comparisons.',
                 'protocols': {'current': 'Tarvainen100 + order1 zero-phase .75..2.5Hz filter',

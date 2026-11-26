@@ -1,4 +1,4 @@
-"""Separate experimental trainer; the existing DINOv2-TCN baseline is unchanged."""
+"""Shared regional waveform trainer for RegionalDINO and RegionalSTAttention."""
 
 import json
 import math
@@ -11,16 +11,35 @@ from neural_methods.loss.RegionalPulseLoss import (
     RegionalPulseLoss, estimate_hr, waveform_correlation,
 )
 from neural_methods.model.regional_dino import RegionalDINO
+from neural_methods.model.regional_st_attention import RegionalSTAttention
 from neural_methods.augmentation.paired_rate import PairedRateAugment
 
 
 def model_arguments(config):
     """Keep architecture options identical for training, preflight and testing."""
-    return {key.lower(): value for key, value in config.MODEL.REGIONAL_DINO.items()}
+    if config.MODEL.NAME == 'RegionalDINO':
+        settings = config.MODEL.REGIONAL_DINO
+    elif config.MODEL.NAME == 'RegionalSTAttention':
+        settings = config.MODEL.REGIONAL_ST
+    else:
+        raise ValueError(f'Unsupported regional model: {config.MODEL.NAME}')
+    return {key.lower(): value for key, value in settings.items()}
 
 
 def build_model(config):
-    return RegionalDINO(**model_arguments(config))
+    arguments = model_arguments(config)
+    model_type = RegionalDINO if config.MODEL.NAME == 'RegionalDINO' else RegionalSTAttention
+    return model_type(**arguments)
+
+
+def validate_model_checkpoint(payload, config):
+    """Old unnamed checkpoints belong only to the original RegionalDINO."""
+    if not isinstance(payload, dict) or 'model_state' not in payload:
+        raise ValueError('Expected a regional model checkpoint with model_state.')
+    if payload.get('model_name', 'RegionalDINO') != config.MODEL.NAME:
+        raise ValueError('Checkpoint model name differs from configuration.')
+    if payload.get('model_arguments') != model_arguments(config):
+        raise ValueError('Model settings differ from checkpoint; use the training architecture settings.')
 
 
 def build_loss(config):
@@ -94,7 +113,8 @@ class RegionalDINOTrainer:
             self._build_optimizer(len(train_loader))
         elif config.TOOLBOX_MODE != 'only_test':
             raise ValueError('RegionalDINO supports train_and_test or only_test.')
-        print('RegionalDINO architecture:', json.dumps(model_arguments(config)))
+        print('Regional model:', config.MODEL.NAME)
+        print('Regional architecture:', json.dumps(model_arguments(config)))
         print('Trainable parameters:', sum(p.numel() for p in self.core.parameters() if p.requires_grad))
         print('Grid cells are image regions, not anatomical masks or perfusion measurements.')
 
@@ -227,7 +247,7 @@ class RegionalDINOTrainer:
     def train(self, data_loader):
         history_path = self.run_dir / 'regional_history.jsonl'
         for epoch in range(self.config.TRAIN.EPOCHS):
-            print(f'\n====RegionalDINO epoch {epoch}====')
+            print(f'\n===={self.config.MODEL.NAME} epoch {epoch}====')
             train_stats = self._run_epoch(data_loader['train'], training=True)
             if self.rate_augment is not None:
                 with (self.run_dir / 'rate_augmentation.jsonl').open('a', encoding='utf-8') as stream:
@@ -260,6 +280,7 @@ class RegionalDINOTrainer:
         # State dictionaries only; no pickled model objects. Atomic replacement
         # avoids leaving a partially written checkpoint after interruption.
         payload = {'format_version': 1, 'epoch': epoch,
+                   'model_name': self.config.MODEL.NAME,
                    'model_arguments': model_arguments(self.config),
                    'model_state': self.core.state_dict(),
                    'optimizer_state': self.optimizer.state_dict(),
@@ -277,12 +298,9 @@ class RegionalDINOTrainer:
             raise FileNotFoundError(f'Checkpoint does not exist: {path}')
         # Explicit weights_only is also available on the baseline torch 2.0.
         payload = torch.load(path, map_location=self.device, weights_only=True)
-        if 'model_state' not in payload:
-            raise ValueError('Expected a RegionalDINO checkpoint, not a DINOv2-TCN baseline checkpoint.')
-        if payload['model_arguments'] != model_arguments(self.config):
-            raise ValueError('Model settings differ from checkpoint; use the training architecture settings.')
+        validate_model_checkpoint(payload, self.config)
         self.core.load_state_dict(payload['model_state'], strict=True)
-        print('Loaded RegionalDINO epoch:', payload['epoch'], 'from', path)
+        print('Loaded', self.config.MODEL.NAME, 'epoch:', payload['epoch'], 'from', path)
 
     def test(self, data_loader):
         from evaluation.metrics import calculate_metrics
@@ -310,6 +328,8 @@ class RegionalDINOTrainer:
                         if key != 'waveform'
                     }
         torch.save({'pred_raw': predictions, 'gt': references, 'regional': regional,
+                    'model_name': self.config.MODEL.NAME,
+                    'model_arguments': model_arguments(self.config),
                     'fs': float(self.config.TEST.DATA.FS),
                     'grid_size': self.core.grid_size, 'normalization': 'raw',
                     'label_type': self.config.TEST.DATA.PREPROCESS.LABEL_TYPE},

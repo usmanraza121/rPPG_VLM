@@ -1,0 +1,10 @@
+# Context control: original per-frame 2D encoder, extended temporal support.
+BASE: ['regional_shallow_learned.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_RegionalShallowLongTCN
+  REGIONAL_DINO:
+    RATE_AUG:
+      ENABLED: False
+MODEL:
+  REGIONAL_DINO:
+    NUM_TCN_BLOCKS: 6

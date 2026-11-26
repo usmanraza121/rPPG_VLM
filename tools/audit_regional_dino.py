@@ -23,8 +23,9 @@ from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import get_config
-from neural_methods.model.regional_dino import RegionalDINO
-from neural_methods.trainer.RegionalDINOTrainer import model_arguments
+from neural_methods.trainer.RegionalDINOTrainer import (
+    build_model, model_arguments, validate_model_checkpoint,
+)
 from tools.regional_audit_data import (
     read_cache_records, assert_subject_disjoint, contiguous_segments,
     load_cached_clip, extract_rgb_traces,
@@ -384,9 +385,8 @@ def main(argv=None):
     model, checkpoint_epoch = None, None
     if not args.classical_only:
         payload = torch.load(args.checkpoint, map_location='cpu', weights_only=True)
-        if payload.get('model_arguments') != architecture:
-            raise ValueError('Checkpoint model arguments differ from config. Use its original architecture settings.')
-        model = RegionalDINO(**architecture)
+        validate_model_checkpoint(payload, config)
+        model = build_model(config)
         model.load_state_dict(payload['model_state'], strict=True)
         model.to(args.device).eval()
         checkpoint_epoch = payload['epoch']
@@ -399,6 +399,7 @@ def main(argv=None):
                 'train_subjects': (sorted({r['subject'] for r in train_records})
                                    if train_records is not None else None),
                 'audited_subjects': sorted({r['subject'] for r in records}),
+                'model_name': config.MODEL.NAME,
                 'model_arguments': architecture, 'resolved_config': config.dump(),
                 'available_recordings': total_records, 'evaluated_recordings': len(records),
                 'diagnostic_only': True, 'ground_truth_certified': False,

@@ -1,0 +1,164 @@
+{
+  "prepared_date": "2026-11-26",
+  "extract_inside": "existing rPPG_VLM repository root",
+  "model": "RegionalSTAttention",
+  "trainable_parameters": 101368,
+  "control_trainable_parameters": 100936,
+  "architecture_config": "configs/train_configs/ablations/regional_st_attention.yaml",
+  "training_command": "python main.py --config_file configs/train_configs/ablations/regional_st_attention.yaml",
+  "rate_augmentation": false,
+  "epochs": 40,
+  "batch_size": 16,
+  "peak_learning_rate": 0.0001,
+  "training_status": "not run on physiological data",
+  "validation": {
+    "tests_run": 19,
+    "failures": 0,
+    "errors": 0,
+    "successful": true,
+    "suites": [
+      "regional_st_integration",
+      "regional_audit",
+      "regional_protocol",
+      "paired_rate"
+    ]
+  },
+  "additional_existing_trainer_tests_passed": 7,
+  "files": [
+    {
+      "path": "main.py",
+      "sha256": "72605fae50996ebcf2fbcf012a3dd67e0bdfee3a38aafb7e7c526675cc2d96cd",
+      "bytes": 17167
+    },
+    {
+      "path": "config.py",
+      "sha256": "d5eb5fd5378c01fa70b61ffc71aa812ba6bfb0a56c47aea33e7cdcf91abb3903",
+      "bytes": 31317
+    },
+    {
+      "path": "neural_methods/model/regional_dino.py",
+      "sha256": "74bc9f92a6773526feb57efc724ecf62198d60900068f9f0f236811d88d766a3",
+      "bytes": 19286
+    },
+    {
+      "path": "neural_methods/model/regional_st_attention.py",
+      "sha256": "f922ff8fe0214e4751530ef2427f22b046b70b5ff593c09baa6e8e5b6224f2ac",
+      "bytes": 5760
+    },
+    {
+      "path": "neural_methods/trainer/__init__.py",
+      "sha256": "fe1146d5303fbd68ee8b97d963c8de0e7cc312416576fd851eaec759b7f4f8b9",
+      "bytes": 578
+    },
+    {
+      "path": "neural_methods/trainer/RegionalDINOTrainer.py",
+      "sha256": "0210ef4c029aaf8fe3a9929b86412dbe537158d8fca3322ff1ef3f7cf5bdfbae",
+      "bytes": 19407
+    },
+    {
+      "path": "neural_methods/loss/RegionalPulseLoss.py",
+      "sha256": "6a260adfab64e3d410bc72066972b645002ddf9dc4ca170f3a105539cfd7d048",
+      "bytes": 11423
+    },
+    {
+      "path": "neural_methods/augmentation/__init__.py",
+      "sha256": "03485d8478357dc2e9a5f15a3bcc80ee078fa679b40b23a2ddb142166cb7e2b6",
+      "bytes": 71
+    },
+    {
+      "path": "neural_methods/augmentation/paired_rate.py",
+      "sha256": "0656e09c756efdc0c1651c813c0b5ec6c2c1f5f0bc6001fb77bc2f9a6b8facfb",
+      "bytes": 6873
+    },
+    {
+      "path": "configs/train_configs/cross/MMPD_PURE_DINOv2TCN.yaml",
+      "sha256": "18f2f8205e55f05a313e43c8739363244db6fbaa80bb611e91c0afb77ba07eec",
+      "bytes": 5149
+    },
+    {
+      "path": "configs/train_configs/cross/MMPD_PURE_RegionalDINO.yaml",
+      "sha256": "6e133408877721b4f0087af69b88ef50c40dab73e409c009932b926f824584a9",
+      "bytes": 1037
+    },
+    {
+      "path": "configs/train_configs/ablations/regional_shallow_learned.yaml",
+      "sha256": "6d031a7f8abfd78a295d0d1a01fb8f0b4e2ff01fbaf2de6baa3e32ad9dd9844e",
+      "bytes": 150
+    },
+    {
+      "path": "configs/train_configs/ablations/regional_shallow_long_tcn.yaml",
+      "sha256": "e06fd2f2dd8e957ac02c40008969db9d870bceb3f5aace5eb7709301cc2d2e27",
+      "bytes": 274
+    },
+    {
+      "path": "configs/train_configs/ablations/regional_st_attention.yaml",
+      "sha256": "2253e6ae2b30bf1c2c140800ee5d5590e9d150e95bb5c399c12db747bba8e092",
+      "bytes": 544
+    },
+    {
+      "path": "configs/train_configs/ablations/regional_st_tcn.yaml",
+      "sha256": "d2457778b140f900736fb71172d1f85680ad745bd0cfe396baa58f395039894b",
+      "bytes": 252
+    },
+    {
+      "path": "tools/check_regional_dino.py",
+      "sha256": "c8c83026f81be492b4d099647fe75da1e33d6626f9690e1db797d165771467b4",
+      "bytes": 7706
+    },
+    {
+      "path": "tools/audit_regional_dino.py",
+      "sha256": "d691fa1582848eec070c043c53bb098e68b7960fbcca9e0123a4458ef32ca973",
+      "bytes": 28080
+    },
+    {
+      "path": "tools/check_regional_protocol.py",
+      "sha256": "5bda57aec73cfc0255d3603f054a6ba246b8c7d1464698f64ee9e0c6f5872649",
+      "bytes": 14774
+    },
+    {
+      "path": "tools/regional_audit_data.py",
+      "sha256": "22f523222b9581e54134737a0bfa9e0c12d202f0ee1f79813c05cc7f2263c5d4",
+      "bytes": 10990
+    },
+    {
+      "path": "tools/regional_signal_diagnostics.py",
+      "sha256": "8a890ffc96be61954dd2f26e0965ac29d93a1561f68f95217011a92a3c2906bb",
+      "bytes": 16468
+    },
+    {
+      "path": "tests/test_regional_st_integration.py",
+      "sha256": "dd8ab5d7791f8949fd13f637f784b64b893416b25bbef5d5f4b08859980fe671",
+      "bytes": 9226
+    },
+    {
+      "path": "tests/test_regional_trainer.py",
+      "sha256": "421d8e827206a96978f8ef2e18a696bc838bac19107dfcc0cc9f32170e3fb511",
+      "bytes": 8481
+    },
+    {
+      "path": "tests/test_regional_audit.py",
+      "sha256": "f117980ad20ba901c87ab62fdc04c9511b88b9952bd2811c37826e5a57373623",
+      "bytes": 8747
+    },
+    {
+      "path": "tests/test_regional_protocol.py",
+      "sha256": "2fc1d0479eeae6124d199b71a70830cbf35d12f2499b7640d768c2de2568062e",
+      "bytes": 5513
+    },
+    {
+      "path": "tests/test_paired_rate.py",
+      "sha256": "e1ced7b691eb3a379a109bcca669f137004402757e2b0cff19fd052b51e9fea7",
+      "bytes": 6587
+    },
+    {
+      "path": "docs/designs/2026-11-26_regional_st_attention.md",
+      "sha256": "57329a403f4dad98990469868aedca27e7aecdeb25158dabef9ec6de81e41955",
+      "bytes": 13724
+    },
+    {
+      "path": "docs/experiments/2026-11-26_regional_st_run.md",
+      "sha256": "444a6b189010fc35a74a3939e5ce83e2484737f9279efa352817f18f5c285700",
+      "bytes": 7244
+    }
+  ]
+}

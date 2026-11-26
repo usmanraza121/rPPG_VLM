@@ -94,7 +94,8 @@ def main():
     video, target = (synthetic_subset(config, args.clips) if args.synthetic
                      else load_cached_subset(config, args.clips))
     print('Scope:', 'SYNTHETIC wiring check' if args.synthetic else 'Fixed MMPD training subset')
-    print('Use DINO:', config.MODEL.REGIONAL_DINO.USE_DINO)
+    print('Model:', config.MODEL.NAME)
+    print('Use DINO:', config.MODEL.NAME == 'RegionalDINO' and config.MODEL.REGIONAL_DINO.USE_DINO)
     print('Audit:', json.dumps(audit_batch(video, target)))
     video, target = video.to(args.device), target.to(args.device)
     model = build_model(config).to(args.device)

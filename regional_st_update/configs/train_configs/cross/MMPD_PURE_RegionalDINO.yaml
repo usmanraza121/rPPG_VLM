@@ -1,0 +1,42 @@
+# Reuse the verified Raw-RGB/Standardized-BVP cache and subject split.
+# Cached tensors are audited on the first batch; paths still refer to your server.
+BASE: ['MMPD_PURE_DINOv2TCN.yaml']
+TOOLBOX_MODE: train_and_test
+TRAIN:
+  BATCH_SIZE: 16
+  EPOCHS: 40
+  LR: 1e-4
+  MODEL_FILE_NAME: MMPD_PURE_RegionalDINO
+  AUG: 0
+  REGIONAL_DINO:
+    BACKBONE_LR: 1e-5
+    WEIGHT_DECAY: 1e-4
+    GRAD_CLIP: 1.0
+    CHECKPOINT_START_EPOCH: 5
+    SELECTION_METRIC: loss
+    MSE_WEIGHT: 0.1
+    CORRELATION_WEIGHT: 1.0
+    SPECTRAL_WEIGHT: 1.0
+    REGIONAL_WEIGHT: 0.25
+    QUALITY_WEIGHT: 0.1
+    QUALITY_TEMPERATURE: 0.25
+    MIN_HZ: 0.75
+    MAX_HZ: 2.5
+MODEL:
+  NAME: RegionalDINO
+  MODEL_DIR: output/MMPD_PURE_RegionalDINO
+  REGIONAL_DINO:
+    USE_DINO: True
+    FUSION: learned
+    GRID_SIZE: 3
+    HIDDEN_DIM: 48
+    CONTEXT_DIM: 32
+    NUM_TCN_BLOCKS: 4
+    KERNEL_SIZE: 3
+    DROPOUT: 0.1
+    BACKBONE_NAME: dinov2_vits14
+    ENCODER_SIZE: 140
+    CONTEXT_STRIDE: 8
+    FRAME_CHUNK_SIZE: 64
+    FINETUNE_BLOCKS: 0
+    CHECKPOINT_BACKBONE: True

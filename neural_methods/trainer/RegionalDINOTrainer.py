@@ -91,6 +91,7 @@ class RegionalDINOTrainer:
         self.best_path = self.model_dir / f'{self.model_file_name}_best.pth'
         self.last_path = self.model_dir / f'{self.model_file_name}_last.pth'
         self.best_epoch, self.best_score = None, float('inf')
+        self.checkpoint_training_seed = None
         self._audit_configuration()
         self.model = (model if model is not None else build_model(config)).to(self.device)
         if self.device.type == 'cuda' and config.NUM_OF_GPU_TRAIN > 1:
@@ -265,7 +266,8 @@ class RegionalDINOTrainer:
             record = {'epoch': epoch, 'train': train_stats, 'valid': valid_stats,
                       'learning_rates': [group['lr'] for group in self.optimizer.param_groups],
                       'selection_metric': self.settings.SELECTION_METRIC, 'selection_score': score,
-                      'checkpoint_eligible': eligible, 'best_epoch': self.best_epoch}
+                      'checkpoint_eligible': eligible, 'best_epoch': self.best_epoch,
+                      'random_seed': self.config.RANDOM_SEED}
             print(json.dumps(record, allow_nan=False))
             with history_path.open('a', encoding='utf-8') as stream:
                 stream.write(json.dumps(record, allow_nan=False) + '\n')
@@ -280,6 +282,7 @@ class RegionalDINOTrainer:
         # State dictionaries only; no pickled model objects. Atomic replacement
         # avoids leaving a partially written checkpoint after interruption.
         payload = {'format_version': 1, 'epoch': epoch,
+                   'random_seed': self.config.RANDOM_SEED,
                    'model_name': self.config.MODEL.NAME,
                    'model_arguments': model_arguments(self.config),
                    'model_state': self.core.state_dict(),
@@ -300,7 +303,10 @@ class RegionalDINOTrainer:
         payload = torch.load(path, map_location=self.device, weights_only=True)
         validate_model_checkpoint(payload, self.config)
         self.core.load_state_dict(payload['model_state'], strict=True)
+        self.checkpoint_training_seed = payload.get('random_seed')
         print('Loaded', self.config.MODEL.NAME, 'epoch:', payload['epoch'], 'from', path)
+        if self.checkpoint_training_seed is not None:
+            print('Checkpoint training seed:', self.checkpoint_training_seed)
 
     def test(self, data_loader):
         from evaluation.metrics import calculate_metrics
@@ -328,6 +334,8 @@ class RegionalDINOTrainer:
                         if key != 'waveform'
                     }
         torch.save({'pred_raw': predictions, 'gt': references, 'regional': regional,
+                    'training_seed': self.checkpoint_training_seed,
+                    'inference_seed': self.config.RANDOM_SEED,
                     'model_name': self.config.MODEL.NAME,
                     'model_arguments': model_arguments(self.config),
                     'fs': float(self.config.TEST.DATA.FS),

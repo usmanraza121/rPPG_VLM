@@ -8,11 +8,13 @@
 import os, re
 import yaml
 from yacs.config import CfgNode as CN
+from reproducibility import validate_seed
 
 _C = CN()
 
 # Base config files
 _C.BASE = ['']
+_C.RANDOM_SEED = 100
 # -----------------------------------------------------------------------------
 # Train settings
 # -----------------------------------------------------------------------------\
@@ -415,6 +417,11 @@ def update_config(config, args):
     # update flag from config file
     _update_config_from_file(config, args.config_file)
     config.defrost()
+    # Audit/preflight callers may supply only config_file. Seed is provenance,
+    # separate from the architecture options used to validate checkpoints.
+    if getattr(args, 'seed', None) is not None:
+        config.RANDOM_SEED = args.seed
+    validate_seed(config.RANDOM_SEED)
     
     # UPDATE TRAIN PATHS
     if config.TRAIN.DATA.FILE_LIST_PATH == default_TRAIN_FILE_LIST_PATH:

@@ -382,7 +382,7 @@ def main(argv=None):
     if (output_dir / 'manifest.json').exists():
         raise FileExistsError('Choose a new --output directory to preserve the previous audit.')
     architecture = model_arguments(config)
-    model, checkpoint_epoch = None, None
+    model, checkpoint_epoch, checkpoint_training_seed = None, None, None
     if not args.classical_only:
         payload = torch.load(args.checkpoint, map_location='cpu', weights_only=True)
         validate_model_checkpoint(payload, config)
@@ -390,8 +390,10 @@ def main(argv=None):
         model.load_state_dict(payload['model_state'], strict=True)
         model.to(args.device).eval()
         checkpoint_epoch = payload['epoch']
+        checkpoint_training_seed = payload.get('random_seed')
         print('Loaded checkpoint epoch:', checkpoint_epoch)
     manifest = {'command_arguments': vars(args), 'checkpoint_epoch': checkpoint_epoch,
+                'checkpoint_training_seed': checkpoint_training_seed,
                 'checkpoint_sha256': file_hash(args.checkpoint) if model is not None else None,
                 'file_list_sha256': file_hash(data_config.FILE_LIST_PATH),
                 'train_file_list_sha256': (file_hash(config.TRAIN.DATA.FILE_LIST_PATH)

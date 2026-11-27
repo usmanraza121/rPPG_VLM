@@ -14,6 +14,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from config import get_config
+from reproducibility import initialize_random_state
 from neural_methods.model.regional_st_attention import RegionalSTAttention
 from neural_methods.trainer.RegionalDINOTrainer import (
     RegionalDINOTrainer, build_model, model_arguments, validate_model_checkpoint,
@@ -68,6 +69,7 @@ class RegionalSTIntegrationTests(unittest.TestCase):
             config = read_config()
             config.defrost()
             config.DEVICE = 'cpu'
+            config.RANDOM_SEED = 101
             config.TRAIN.EPOCHS = 3
             config.TRAIN.REGIONAL_DINO.CHECKPOINT_START_EPOCH = 1
             config.MODEL.REGIONAL_ST.GRID_SIZE = 2
@@ -78,6 +80,7 @@ class RegionalSTIntegrationTests(unittest.TestCase):
             config.LOG.PATH = str(root / 'run')
             config.TEST.METRICS = ['MAE']
             config.freeze()
+            initialize_random_state(config.RANDOM_SEED)
             t = torch.arange(64) / 30
             targets = torch.stack([torch.sin(2 * torch.pi * f * t) for f in (1., 1., 1.5, 1.5)])
             texture = 110 + torch.rand(4, 1, 3, 16, 16) * 10
@@ -91,6 +94,7 @@ class RegionalSTIntegrationTests(unittest.TestCase):
             self.assertEqual(len(list((root / 'checkpoints').glob('*.pth'))), 2)
             payload = torch.load(trainer.best_path, weights_only=True)
             self.assertEqual(payload['model_name'], 'RegionalSTAttention')
+            self.assertEqual(payload['random_seed'], 101)
             validate_model_checkpoint(payload, config)
             backend = config.clone()
             backend.defrost()
@@ -113,6 +117,7 @@ class RegionalSTIntegrationTests(unittest.TestCase):
             test_config = config.clone()
             test_config.defrost()
             test_config.TOOLBOX_MODE = 'only_test'
+            test_config.RANDOM_SEED = 100  # Inference seed need not match training.
             test_config.INFERENCE.MODEL_PATH = str(trainer.best_path)
             test_config.LOG.PATH = str(root / 'test_run')
             test_config.freeze()
@@ -124,6 +129,8 @@ class RegionalSTIntegrationTests(unittest.TestCase):
             saved = torch.load(root / 'test_run/regional_waveforms.pt', weights_only=True)
             torch.testing.assert_close(saved['pred_raw']['recording0'][0].squeeze(1), expected[0])
             self.assertEqual(saved['normalization'], 'raw')
+            self.assertEqual(saved['training_seed'], 101)
+            self.assertEqual(saved['inference_seed'], 100)
             self.assertEqual(saved['regional']['recording0'][0]['regional_waveforms'].shape, (4, 64))
             self.assertFalse((root / 'run/rate_augmentation.jsonl').exists())
 
@@ -154,10 +161,11 @@ class RegionalSTIntegrationTests(unittest.TestCase):
                 'VALID:\n  DATA:\n    FILE_LIST_PATH: ' + json.dumps(str(valid_csv)) + '\n'
                 'MODEL:\n  REGIONAL_ST:\n    HIDDEN_DIM: 8\n    CONTEXT_DIM: 4\n', encoding='utf-8')
             cfg = read_config(cfg_path)
+            initialize_random_state(101)
             model = build_model(cfg)
             checkpoint = root / 'best.pth'
             torch.save({'model_name': cfg.MODEL.NAME, 'model_arguments': model_arguments(cfg),
-                        'model_state': model.state_dict(), 'epoch': 5}, checkpoint)
+                        'model_state': model.state_dict(), 'epoch': 5, 'random_seed': 101}, checkpoint)
             output = root / 'audit'
             with contextlib.redirect_stdout(io.StringIO()):
                 result = audit_main(['--config', str(cfg_path), '--checkpoint', str(checkpoint),
@@ -168,6 +176,7 @@ class RegionalSTIntegrationTests(unittest.TestCase):
             self.assertEqual(result['omitted_tail_frames'], 0)
             manifest = json.loads((output / 'manifest.json').read_text())
             self.assertEqual(manifest['model_name'], 'RegionalSTAttention')
+            self.assertEqual(manifest['checkpoint_training_seed'], 101)
             saved = next((output / 'waveforms').glob('*.npz'))
             with np.load(saved) as arrays:
                 self.assertEqual(arrays['candidates'].shape, (9, 320))

@@ -1,10 +1,8 @@
 """ The main function of rPPG deep learning pipeline."""
 
 import argparse
-import random
 import time
 import os
-import numpy as np
 import torch
 from config import get_config
 from dataset import data_loader
@@ -16,28 +14,8 @@ import logging
 import datetime
 import sys
 
-RANDOM_SEED = 100
-torch.manual_seed(RANDOM_SEED)
-torch.cuda.manual_seed(RANDOM_SEED)
-torch.cuda.manual_seed_all(RANDOM_SEED)
-np.random.seed(RANDOM_SEED)
-random.seed(RANDOM_SEED)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
-# Create a general generator for use with the validation dataloader,
-# the test dataloader, and the unsupervised dataloader
-general_generator = torch.Generator()
-general_generator.manual_seed(RANDOM_SEED)
-# Create a training generator to isolate the train dataloader from
-# other dataloaders and better control non-deterministic behavior
-train_generator = torch.Generator()
-train_generator.manual_seed(RANDOM_SEED)
+from reproducibility import initialize_random_state, seed_worker
 
-
-def seed_worker(worker_id):
-    worker_seed = torch.initial_seed() % 2 ** 32
-    np.random.seed(worker_seed)
-    random.seed(worker_seed)
 
 # intra-dataset training
 #  configs/train_configs/intra/2UBFC-rPPG_SSMamba.yaml # done 0.45 MAE
@@ -51,6 +29,8 @@ def add_args(parser):
     """Adds arguments for parser."""
     parser.add_argument('--config_file', required=False,
                         default="configs/train_configs/cross/MMPD_PURE_DINOv2TCN.yaml", type=str, help="The name of the model.")
+    parser.add_argument('--seed', type=int, default=None,
+                        help='Override RANDOM_SEED from YAML (default 100).')
     return parser
 
 
@@ -167,6 +147,7 @@ if __name__ == "__main__":
     
     
     config = get_config(args)
+    general_generator, train_generator = initialize_random_state(config.RANDOM_SEED)
     run_dir, checkpoint_dir, log_file = setup_run_dir('runs', config.MODEL.NAME)
 
     config.defrost()
@@ -184,6 +165,7 @@ if __name__ == "__main__":
     # config = get_config(args)
     print('------------Model training --------------------------')
     print('======= intra dataset PURE_PURE =========== \n\n')
+    print('Random seed:', config.RANDOM_SEED)
     print('Configuration:')
     print(config, end='\n\n')
     

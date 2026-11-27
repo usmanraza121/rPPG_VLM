@@ -1,0 +1,440 @@
+{
+  "review_date": "2026-11-27",
+  "source_hashes": {
+    "regional_history.jsonl": "ad41f587cadb71febf487f4121331f4ec43fa9fecbaedc72b6ba71406240edf5",
+    "regional_waveforms.pt": "acff7c97b8b12f6554d5d7bf2ddfbdd78d9eea3f58ed1c431823c719d0e084eb",
+    "training.log": "f0bd37f3003d636c1dd6781e6055d93385c7cdd47c8c7ad83a96c9150a9940fa"
+  },
+  "metadata": {
+    "model_name": "RegionalSTAttention",
+    "model_arguments": {
+      "temporal_backend": "tcn",
+      "spatial_size": 12,
+      "hidden_dim": 48,
+      "grid_size": 3,
+      "context_dim": 32,
+      "dropout": 0.1,
+      "fusion": "learned"
+    },
+    "fs": 30.0,
+    "grid_size": 3,
+    "normalization": "raw",
+    "label_type": "Standardized"
+  },
+  "resolved_config_differences_exp2_to_exp3": [
+    {
+      "key": "BASE",
+      "exp2": [
+        "regional_shallow_learned.yaml"
+      ],
+      "exp3": [
+        "regional_st_attention.yaml"
+      ]
+    },
+    {
+      "key": "LOG.PATH",
+      "exp2": "runs/RegionalSTAttention_20261126_093244",
+      "exp3": "runs/RegionalSTAttention_20261126_230422"
+    },
+    {
+      "key": "MODEL.MODEL_DIR",
+      "exp2": "runs/RegionalSTAttention_20261126_093244/checkpoints",
+      "exp3": "runs/RegionalSTAttention_20261126_230422/checkpoints"
+    },
+    {
+      "key": "MODEL.REGIONAL_ST.TEMPORAL_BACKEND",
+      "exp2": "attention",
+      "exp3": "tcn"
+    },
+    {
+      "key": "TRAIN.MODEL_FILE_NAME",
+      "exp2": "MMPD_PURE_RegionalSTAttention",
+      "exp3": "MMPD_PURE_RegionalSTTCN"
+    }
+  ],
+  "checkpoint_log_lines": [
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Updated best source-validation checkpoint: runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth",
+    "Loaded RegionalSTAttention epoch: 38 from runs/RegionalSTAttention_20261126_230422/checkpoints/MMPD_PURE_RegionalSTTCN_best.pth"
+  ],
+  "selected_epoch_zero_based": 38,
+  "epochs": 40,
+  "recordings": 59,
+  "clips": 750,
+  "frames": 120000,
+  "exact_reference_clips_exp2_exp3": true,
+  "reference_log_vectors_all_runs_equal": true,
+  "official_metrics": {
+    "baseline": {
+      "MAE": 18.26114814871318,
+      "RMSE": 26.105114190282574,
+      "Pearson": 0.08426364997875146,
+      "within5": 27,
+      "within10": 28,
+      "over10": 31,
+      "over20": 25,
+      "bias_bpm": 9.492135654237288,
+      "minimum_hr": 61.56615662,
+      "maximum_hr": 125.29252925,
+      "MAPE": 30.607357710496245,
+      "SNR": -3.367713099909702
+    },
+    "exp1": {
+      "MAE": 13.583731254481382,
+      "RMSE": 22.869360444638822,
+      "Pearson": 0.26793010006799783,
+      "within5": 35,
+      "within10": 37,
+      "over10": 22,
+      "over20": 18,
+      "bias_bpm": 3.075561793728813,
+      "minimum_hr": 50.2250225,
+      "maximum_hr": 125.29252925,
+      "MAPE": 20.94271861221804,
+      "SNR": -1.9646188382283631
+    },
+    "exp2": {
+      "MAE": 9.446368365650121,
+      "RMSE": 18.509581637943374,
+      "Pearson": 0.7227048485269987,
+      "within5": 43,
+      "within10": 45,
+      "over10": 14,
+      "over20": 12,
+      "bias_bpm": 8.476101846949152,
+      "minimum_hr": 50.2250225,
+      "maximum_hr": 132.85328533,
+      "MAPE": 18.754950153361552,
+      "SNR": 0.7830637802879565
+    },
+    "exp3": {
+      "MAE": 16.705060336542132,
+      "RMSE": 25.14224238910557,
+      "Pearson": 0.25435396544608785,
+      "within5": 31,
+      "within10": 32,
+      "over10": 27,
+      "over20": 25,
+      "bias_bpm": 9.492135654406779,
+      "minimum_hr": 57.78577858,
+      "maximum_hr": 132.31323132,
+      "MAPE": 28.480793499970357,
+      "SNR": -0.491448576246962
+    }
+  },
+  "hr_bins": [
+    {
+      "hr_bin": "<60",
+      "n": 25,
+      "baseline_mae": 31.1071107108,
+      "exp1_mae": 19.161116111200002,
+      "exp2_mae": 20.608460845599996,
+      "exp3_mae": 29.5301530152,
+      "exp3_candidates": 4
+    },
+    {
+      "hr_bin": "60-80",
+      "n": 26,
+      "baseline_mae": 1.7032472480769216,
+      "exp1_mae": 1.1008793196153834,
+      "exp2_mae": 1.3293637053846155,
+      "exp3_mae": 1.391677630384615,
+      "exp3_candidates": 26
+    },
+    {
+      "hr_bin": "80-100",
+      "n": 1,
+      "baseline_mae": 0.5400540099999915,
+      "exp1_mae": 0.0,
+      "exp2_mae": 0.0,
+      "exp3_mae": 0.0,
+      "exp3_candidates": 1
+    },
+    {
+      "hr_bin": ">=100",
+      "n": 7,
+      "baseline_mae": 36.4150700757143,
+      "exp1_mae": 41.96991127428572,
+      "exp2_mae": 1.0801080099999996,
+      "exp3_mae": 30.16587372857143,
+      "exp3_candidates": 2
+    }
+  ],
+  "subjects": [
+    {
+      "subject": "subject01",
+      "n": 6,
+      "baseline_mae": 0.630063006666667,
+      "exp1_mae": 0.540054006666665,
+      "exp2_mae": 0.9900990100000016,
+      "exp3_mae": 0.5400540066666674,
+      "exp3_candidates": 6,
+      "exp3_waveform_corr": -0.009255151060786379
+    },
+    {
+      "subject": "subject02",
+      "n": 6,
+      "baseline_mae": 0.630063004999999,
+      "exp1_mae": 0.7200720066666667,
+      "exp2_mae": 0.7200720066666667,
+      "exp3_mae": 0.9900990100000016,
+      "exp3_candidates": 6,
+      "exp3_waveform_corr": 0.08214075441344752
+    },
+    {
+      "subject": "subject03",
+      "n": 6,
+      "baseline_mae": 21.422142214999997,
+      "exp1_mae": 8.370837083333331,
+      "exp2_mae": 3.330333029999997,
+      "exp3_mae": 22.862286228333332,
+      "exp3_candidates": 2,
+      "exp3_waveform_corr": 0.1323506118993027
+    },
+    {
+      "subject": "subject04",
+      "n": 6,
+      "baseline_mae": 3.3303330366666644,
+      "exp1_mae": 0.9900990133333328,
+      "exp2_mae": 2.16021602,
+      "exp3_mae": 1.6201620199999975,
+      "exp3_candidates": 6,
+      "exp3_waveform_corr": 0.28970572023062663
+    },
+    {
+      "subject": "subject05",
+      "n": 6,
+      "baseline_mae": 30.423042305000006,
+      "exp1_mae": 25.92259225833334,
+      "exp2_mae": 29.43294329499999,
+      "exp3_mae": 30.78307830833333,
+      "exp3_candidates": 0,
+      "exp3_waveform_corr": -0.05833538012274501
+    },
+    {
+      "subject": "subject06",
+      "n": 5,
+      "baseline_mae": 3.4563456359999973,
+      "exp1_mae": 2.9162916299999964,
+      "exp2_mae": 1.5121512159999981,
+      "exp3_mae": 3.240324032000001,
+      "exp3_candidates": 5,
+      "exp3_waveform_corr": 0.20943292658440468
+    },
+    {
+      "subject": "subject07",
+      "n": 6,
+      "baseline_mae": 40.86408640666667,
+      "exp1_mae": 47.34473447166667,
+      "exp2_mae": 1.2601260116666662,
+      "exp3_mae": 35.10351035,
+      "exp3_candidates": 1,
+      "exp3_waveform_corr": -0.1166497436875303
+    },
+    {
+      "subject": "subject08",
+      "n": 6,
+      "baseline_mae": 37.98379838,
+      "exp1_mae": 13.051305131666666,
+      "exp2_mae": 8.550855086666667,
+      "exp3_mae": 34.74347434833333,
+      "exp3_candidates": 1,
+      "exp3_waveform_corr": -0.06473913434694102
+    },
+    {
+      "subject": "subject09",
+      "n": 6,
+      "baseline_mae": 39.513951391666666,
+      "exp1_mae": 32.31323132166666,
+      "exp2_mae": 44.554455445,
+      "exp3_mae": 34.47344734333333,
+      "exp3_candidates": 0,
+      "exp3_waveform_corr": -0.06329051525280384
+    },
+    {
+      "subject": "subject10",
+      "n": 6,
+      "baseline_mae": 1.890189016666665,
+      "exp1_mae": 1.8901890166666675,
+      "exp2_mae": 0.630063006666667,
+      "exp3_mae": 0.4500450033333318,
+      "exp3_candidates": 6,
+      "exp3_waveform_corr": 0.08619653958400993
+    }
+  ],
+  "selected_source_validation_clip": {
+    "exp2": {
+      "epoch": 39,
+      "train": {
+        "total": 1.3899250555882041,
+        "mse": 0.9524413524732257,
+        "correlation": 0.7503881311955354,
+        "spectral": 0.2192110401054756,
+        "regional": 1.1831902175343043,
+        "quality": 0.29284193584580287,
+        "waveform_corr": 0.2496118685408427,
+        "prediction_std": 0.2577014127803321,
+        "target_std": 0.9161271914685748,
+        "undefined_hr_fraction": 0.0,
+        "weight_entropy": 2.1436800188725083,
+        "clip_hr_mae": 18.582501313715188,
+        "raw_mse": 0.95244133742642,
+        "zero_baseline_mse": 0.9986478739057078,
+        "samples": 5709
+      },
+      "valid": {
+        "total": 1.3685692604915465,
+        "mse": 0.9369572130512068,
+        "correlation": 0.72396644576148,
+        "spectral": 0.22363576157526535,
+        "regional": 1.1786947855509584,
+        "quality": 0.3259763363860028,
+        "waveform_corr": 0.2756376466809635,
+        "prediction_std": 0.2637378945007337,
+        "target_std": 0.9291322725690906,
+        "undefined_hr_fraction": 0.0,
+        "weight_entropy": 2.154990667211511,
+        "clip_hr_mae": 16.85349484707447,
+        "raw_mse": 0.936957202498772,
+        "zero_baseline_mse": 1.0020001963898293,
+        "samples": 1507
+      }
+    },
+    "exp3": {
+      "epoch": 38,
+      "train": {
+        "total": 1.2849213889902622,
+        "mse": 0.9612489631472921,
+        "correlation": 0.695104662372678,
+        "spectral": 0.1801541960788579,
+        "regional": 1.1100585593883243,
+        "quality": 0.3602299760406542,
+        "waveform_corr": 0.3048953416208019,
+        "prediction_std": 0.3298861381781667,
+        "target_std": 0.9161271902783612,
+        "undefined_hr_fraction": 0.0,
+        "weight_entropy": 2.1820125817876708,
+        "clip_hr_mae": 12.447861928533895,
+        "raw_mse": 0.9612489475471415,
+        "zero_baseline_mse": 0.9986478717674995,
+        "samples": 5709
+      },
+      "valid": {
+        "total": 1.2415592457651696,
+        "mse": 0.9509566452776903,
+        "correlation": 0.6533523274717856,
+        "spectral": 0.18160960566704845,
+        "regional": 1.0849042736147125,
+        "quality": 0.40275576667193946,
+        "waveform_corr": 0.3463204055530153,
+        "prediction_std": 0.42514739106962357,
+        "target_std": 0.9291322725690906,
+        "undefined_hr_fraction": 0.0,
+        "weight_entropy": 2.1830422565014693,
+        "clip_hr_mae": 11.687583111702128,
+        "raw_mse": 0.9509566238089436,
+        "zero_baseline_mse": 1.0020001963898293,
+        "samples": 1507
+      }
+    }
+  },
+  "saved_waveform_analysis": {
+    "uniform_mae_bpm": 16.714213794260782,
+    "oracle_region_mae_bpm_diagnostic": 12.412088666493764,
+    "correct_processed_regional_candidate": 33,
+    "lost_correct_candidate_from_exp2": 16,
+    "lost_candidate_recordings": [
+      "301",
+      "303",
+      "306",
+      "502",
+      "504",
+      "702",
+      "703",
+      "704",
+      "705",
+      "706",
+      "803",
+      "804",
+      "806",
+      "901",
+      "905",
+      "906"
+    ],
+    "gained_correct_candidate_from_exp2": 0,
+    "large_fused_error_over10": 27,
+    "correct_candidate_large_fused_error": 2,
+    "no_candidate_large_fused_error": 25,
+    "near_double_fused": 6,
+    "near_half_fused": 0,
+    "processed_signed_waveform_corr": 0.04603231937053398,
+    "mean_absolute_unshifted_r": 0.1420951218024688,
+    "regional_second_to_fundamental_gt1": 139
+  },
+  "paired_exp2_exp3": {
+    "worse": 35,
+    "better": 18,
+    "tied": 6
+  },
+  "processing_stage_diagnostics": {
+    "detrended": {
+      "mae_bpm": 12.997909960487574,
+      "within5": 37,
+      "candidate_correct": 39
+    },
+    "filtered": {
+      "mae_bpm": 16.705060336542132,
+      "within5": 31,
+      "candidate_correct": 33
+    },
+    "raw": {
+      "mae_bpm": 12.714152771209324,
+      "within5": 38,
+      "candidate_correct": 40
+    }
+  },
+  "detrended_correct_filtered_error_over10_recordings": [
+    "305",
+    "306",
+    "702",
+    "703",
+    "706"
+  ],
+  "limits": [
+    "One run per architecture; no repeated-seed or causal attention claim.",
+    "Source clip metrics differ from full-record audit metrics; Exp3 source-record audit is missing.",
+    "PURE has guided development and is exploratory, not fresh confirmatory data.",
+    "GT-selected regions are diagnostic; sensitivity scores do not replace the primary evaluator.",
+    "No checkpoint binary or server cache hashes supplied with Exp3.",
+    "Uniform fusion is post-hoc on jointly learned candidates, not a separately trained model."
+  ]
+}

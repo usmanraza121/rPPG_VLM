@@ -2,6 +2,8 @@
 
 Reviewed 2026-11-26. Inputs: `Exp_data/exp2/{training.log,regional_history.jsonl,regional_waveforms.pt}`. No training code, loss, labels, cached data or primary evaluator was changed during this review. A reproducible artifact-analysis script and derived tables/figures are saved directly in `rPPG_VLM/` for the user's GitHub workflow.
 
+**Follow-up source audit completed:** The [full MMPD comparison](2026-11-26_exp2_mmpd_audit.md) now shows MAE6.8709bpm versus original8.5660. Current filtering helps MMPD overall, unlike the PURE sensitivity result. The pending-audit statements below describe the earlier review snapshot. The matched3D–TCN control remains the next training comparison.
+
 ## Main result
 
 Exp2 is the strongest aggregate PURE result so far: MAE is **9.4464 bpm**, a48.3% reduction from the original no-DINO model and30.5% from Exp1. The gain is uneven. High-rate HR estimation improves substantially; low-rate failures and weak directly aligned waveform agreement remain. The architecture is a promising candidate, not yet a confirmed generalization improvement or an isolated attention contribution.

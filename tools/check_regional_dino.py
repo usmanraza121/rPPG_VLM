@@ -22,7 +22,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import get_config
 from neural_methods.trainer.RegionalDINOTrainer import (
-    audit_batch, build_loss, build_model,
+    audit_batch, build_loss, build_model, initialize_frozen_source,
 )
 from neural_methods.loss.RegionalPulseLoss import waveform_correlation
 
@@ -99,6 +99,7 @@ def main():
     print('Audit:', json.dumps(audit_batch(video, target)))
     video, target = video.to(args.device), target.to(args.device)
     model = build_model(config).to(args.device)
+    initialize_frozen_source(model, config)
     criterion = build_loss(config).to(args.device)
     groups = []
     for backbone_group, rate in ((False, config.TRAIN.LR),

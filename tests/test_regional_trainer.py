@@ -181,7 +181,7 @@ class RegionalTrainerTests(unittest.TestCase):
                 config.freeze()
                 model = build_model(config)
                 self.assertEqual(model.num_regions, 9)
-                self.assertIn(config.MODEL.NAME, ('RegionalDINO', 'RegionalSTAttention'))
+                self.assertIn(config.MODEL.NAME, ('RegionalDINO', 'RegionalSTAttention', 'RegionalFrozenFusion'))
 
 
 if __name__ == '__main__':

@@ -1,0 +1,16 @@
+# Source-locked attention candidates; only a fresh moments-only gate trains.
+BASE: ['regional_st_attention.yaml']
+RANDOM_SEED: 100
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_FrozenFusionMoments
+  FROZEN_FUSION:
+    SOURCE_CHECKPOINT: runs/RegionalSTAttention_20261126_093244/checkpoints/MMPD_PURE_RegionalSTAttention_best.pth
+    SOURCE_SHA256: 38d73b5a4568d9d4ac65c8fb388d560f52dcde5e5a243ff28737a571ee5e5a4e
+MODEL:
+  NAME: RegionalFrozenFusion
+  MODEL_DIR: output/MMPD_PURE_FrozenFusionMoments
+  REGIONAL_FROZEN_FUSION:
+    GATE_MODE: moments
+    FS: 30.0
+    MIN_HZ: 0.75
+    MAX_HZ: 2.5

@@ -52,7 +52,7 @@ def train_and_test(config, data_loader_dict):
         model_trainer = trainer.SSMambaTrainer.SSMambaTrainer(config, data_loader_dict)
     elif config.MODEL.NAME == 'DINOv2TCN':
         model_trainer = trainer.DINOv2TCNTrainer.DINOv2TCNTrainer(config, data_loader_dict)
-    elif config.MODEL.NAME in ('RegionalDINO', 'RegionalSTAttention'):
+    elif config.MODEL.NAME in ('RegionalDINO', 'RegionalSTAttention', 'RegionalFrozenFusion'):
         model_trainer = trainer.RegionalDINOTrainer.RegionalDINOTrainer(config, data_loader_dict)
 
     else:
@@ -79,7 +79,7 @@ def test(config, data_loader_dict):
         model_trainer = trainer.SSMambaTrainer.SSMambaTrainer(config, data_loader_dict)
     elif config.MODEL.NAME == 'DINOv2TCN':
         model_trainer = trainer.DINOv2TCNTrainer.DINOv2TCNTrainer(config, data_loader_dict)
-    elif config.MODEL.NAME in ('RegionalDINO', 'RegionalSTAttention'):
+    elif config.MODEL.NAME in ('RegionalDINO', 'RegionalSTAttention', 'RegionalFrozenFusion'):
         model_trainer = trainer.RegionalDINOTrainer.RegionalDINOTrainer(config, data_loader_dict)
     else:
         raise ValueError('Your Model is Not Supported  Yet!')

@@ -1,0 +1,5 @@
+dataset,seed,attention_minus_tcn_mae,attention_better,attention_worse,ties,only_attention_correct_candidate,only_tcn_correct_candidate
+PURE,100,-7.2586919708920075,35,18,6,16,0
+PURE,101,-8.631710628689989,38,13,8,16,0
+MMPD,100,-1.643814016438138,74,46,17,20,7
+MMPD,101,0.027594000275940094,61,55,21,15,5

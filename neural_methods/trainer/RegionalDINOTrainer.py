@@ -1,6 +1,7 @@
 """Shared regional waveform trainer for RegionalDINO and RegionalSTAttention."""
 
 import json
+import hashlib
 import math
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from neural_methods.loss.RegionalPulseLoss import (
 )
 from neural_methods.model.regional_dino import RegionalDINO
 from neural_methods.model.regional_st_attention import RegionalSTAttention
+from neural_methods.model.regional_frozen_fusion import RegionalFrozenFusion
 from neural_methods.augmentation.paired_rate import PairedRateAugment
 
 
@@ -19,16 +21,20 @@ def model_arguments(config):
     """Keep architecture options identical for training, preflight and testing."""
     if config.MODEL.NAME == 'RegionalDINO':
         settings = config.MODEL.REGIONAL_DINO
-    elif config.MODEL.NAME == 'RegionalSTAttention':
+    elif config.MODEL.NAME in ('RegionalSTAttention', 'RegionalFrozenFusion'):
         settings = config.MODEL.REGIONAL_ST
     else:
         raise ValueError(f'Unsupported regional model: {config.MODEL.NAME}')
-    return {key.lower(): value for key, value in settings.items()}
+    arguments = {key.lower(): value for key, value in settings.items()}
+    if config.MODEL.NAME == 'RegionalFrozenFusion':
+        arguments.update({key.lower(): value for key, value in config.MODEL.REGIONAL_FROZEN_FUSION.items()})
+    return arguments
 
 
 def build_model(config):
     arguments = model_arguments(config)
-    model_type = RegionalDINO if config.MODEL.NAME == 'RegionalDINO' else RegionalSTAttention
+    model_type = {'RegionalDINO': RegionalDINO, 'RegionalSTAttention': RegionalSTAttention,
+                  'RegionalFrozenFusion': RegionalFrozenFusion}[config.MODEL.NAME]
     return model_type(**arguments)
 
 
@@ -40,6 +46,37 @@ def validate_model_checkpoint(payload, config):
         raise ValueError('Checkpoint model name differs from configuration.')
     if payload.get('model_arguments') != model_arguments(config):
         raise ValueError('Model settings differ from checkpoint; use the training architecture settings.')
+    if config.MODEL.NAME == 'RegionalFrozenFusion':
+        source = payload.get('source_checkpoint')
+        if not isinstance(source, dict) or not source.get('sha256'):
+            raise ValueError('Frozen fusion checkpoint requires source checkpoint provenance.')
+        expected = config.TRAIN.FROZEN_FUSION.SOURCE_SHA256
+        if expected and source['sha256'] != expected:
+            raise ValueError('Frozen fusion source hash differs from configuration.')
+
+
+def initialize_frozen_source(model, config):
+    """Training/preflight initialization only; complete new checkpoints are standalone."""
+    if config.MODEL.NAME != 'RegionalFrozenFusion':
+        return None
+    path = Path(config.TRAIN.FROZEN_FUSION.SOURCE_CHECKPOINT)
+    if not config.TRAIN.FROZEN_FUSION.SOURCE_CHECKPOINT or not path.is_file():
+        raise FileNotFoundError(f'Frozen fusion source checkpoint not found: {path}')
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1024*1024), b''):
+            digest.update(block)
+    checksum = digest.hexdigest()
+    expected = config.TRAIN.FROZEN_FUSION.SOURCE_SHA256
+    if expected and expected != checksum:
+        raise ValueError('Source checkpoint SHA256 differs from the locked experiment source.')
+    payload = torch.load(path, map_location='cpu', weights_only=True)
+    model.load_extractor_checkpoint(payload)
+    lineage = dict(path=str(path), sha256=checksum, epoch=payload['epoch'],
+                   random_seed=payload.get('random_seed'), model_name=payload['model_name'],
+                   model_arguments=payload['model_arguments'])
+    print('Frozen extractor source:', json.dumps(lineage))
+    return lineage
 
 
 def build_loss(config):
@@ -92,8 +129,11 @@ class RegionalDINOTrainer:
         self.last_path = self.model_dir / f'{self.model_file_name}_last.pth'
         self.best_epoch, self.best_score = None, float('inf')
         self.checkpoint_training_seed = None
+        self.source_checkpoint = None
         self._audit_configuration()
         self.model = (model if model is not None else build_model(config)).to(self.device)
+        if config.TOOLBOX_MODE == 'train_and_test':
+            self.source_checkpoint = initialize_frozen_source(self.model, config)
         if self.device.type == 'cuda' and config.NUM_OF_GPU_TRAIN > 1:
             self.model = torch.nn.DataParallel(self.model,
                                              device_ids=list(range(config.NUM_OF_GPU_TRAIN)))
@@ -139,6 +179,13 @@ class RegionalDINOTrainer:
             raise ValueError('Set TRAIN.AUG: 0; legacy model-specific augmentation is not used here.')
         if self.settings.GRAD_CLIP <= 0 or self.settings.CHECKPOINT_START_EPOCH < 0:
             raise ValueError('GRAD_CLIP must be positive and CHECKPOINT_START_EPOCH nonnegative.')
+        if self.config.MODEL.NAME == 'RegionalFrozenFusion':
+            if self.settings.RATE_AUG.ENABLED:
+                raise ValueError('Keep rate augmentation disabled for the frozen-candidate comparison.')
+            options = self.config.MODEL.REGIONAL_FROZEN_FUSION
+            if (options.FS != self.config.TRAIN.DATA.FS or options.MIN_HZ != self.settings.MIN_HZ
+                    or options.MAX_HZ != self.settings.MAX_HZ):
+                raise ValueError('Frozen fusion descriptor and loss/data frequency settings must match.')
 
     def _build_optimizer(self, steps_per_epoch):
         head, backbone = [], []
@@ -289,6 +336,8 @@ class RegionalDINOTrainer:
                    'optimizer_state': self.optimizer.state_dict(),
                    'scheduler_state': self.scheduler.state_dict(),
                    'metrics': metrics}
+        if self.source_checkpoint is not None:
+            payload['source_checkpoint'] = self.source_checkpoint
         if self.rate_augment is not None:
             payload['rate_augmentation_settings'] = dict(self.settings.RATE_AUG)
             payload['rate_augmentation_state'] = self.rate_augment.state_dict()
@@ -304,6 +353,7 @@ class RegionalDINOTrainer:
         validate_model_checkpoint(payload, self.config)
         self.core.load_state_dict(payload['model_state'], strict=True)
         self.checkpoint_training_seed = payload.get('random_seed')
+        self.source_checkpoint = payload.get('source_checkpoint')
         print('Loaded', self.config.MODEL.NAME, 'epoch:', payload['epoch'], 'from', path)
         if self.checkpoint_training_seed is not None:
             print('Checkpoint training seed:', self.checkpoint_training_seed)
@@ -336,6 +386,7 @@ class RegionalDINOTrainer:
         torch.save({'pred_raw': predictions, 'gt': references, 'regional': regional,
                     'training_seed': self.checkpoint_training_seed,
                     'inference_seed': self.config.RANDOM_SEED,
+                    'source_checkpoint': self.source_checkpoint,
                     'model_name': self.config.MODEL.NAME,
                     'model_arguments': model_arguments(self.config),
                     'fs': float(self.config.TEST.DATA.FS),

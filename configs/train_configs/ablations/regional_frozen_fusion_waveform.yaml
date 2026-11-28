@@ -1,0 +1,8 @@
+# Same candidates, gate tensors/initialization/budget; six pulse summaries on.
+BASE: ['regional_frozen_fusion_moments.yaml']
+TRAIN:
+  MODEL_FILE_NAME: MMPD_PURE_FrozenFusionWaveform
+MODEL:
+  MODEL_DIR: output/MMPD_PURE_FrozenFusionWaveform
+  REGIONAL_FROZEN_FUSION:
+    GATE_MODE: waveform
